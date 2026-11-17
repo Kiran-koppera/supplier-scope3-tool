@@ -55,8 +55,12 @@ def build(suppliers_csv: Path, factors_csv: Path, out_dir: Path, cfg: ScenarioCo
     (out_dir / "results.json").write_text(json.dumps(results, indent=2))
 
     template = (ROOT / "dashboard" / "template.html").read_text()
-    html = template.replace("/*__DATA__*/null", json.dumps(results))
-    (out_dir / "dashboard.html").write_text(html)
+    body = template.replace("/*__DATA__*/null", json.dumps(results))
+    # Wrap as a complete document so it renders correctly on any host and on phones.
+    html = ('<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n'
+            '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n'
+            '</head>\n<body>\n' + body + '\n</body>\n</html>\n')
+    (out_dir / "dashboard.html").write_text(html, encoding="utf-8")
     return results
 
 

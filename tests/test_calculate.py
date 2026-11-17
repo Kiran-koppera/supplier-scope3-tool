@@ -92,5 +92,6 @@ def test_build_writes_outputs_and_injects_dashboard_data(tmp_path):
         assert (tmp_path / name).exists(), name
     html = (tmp_path / "dashboard.html").read_text()
     assert "/*__DATA__*/" not in html            # placeholder was replaced
+    assert html.startswith("<!doctype html>") and "width=device-width" in html
     assert json.loads((tmp_path / "results.json").read_text())["summary"] == results["summary"]
     assert results["config"]["target_adoption_year"] == 2027
