@@ -5,7 +5,8 @@ Scope 3 footprint. It then shows where to engage suppliers to cut emissions.
 I built it as a working example of the supplier GHG work that a corporate
 sustainability team does with its Global Supply Management organisation.
 
-**[Live dashboard →](https://claude.ai/artifact/BkkS5kf4xDhzFzCRtEaxG3)** (sample data)
+**Dashboard:** [`output/dashboard.html`](output/dashboard.html) is a single self-contained
+file. Download it and open it in any browser; no install needed. It runs on sample data.
 
 ## What it answers
 
@@ -23,7 +24,7 @@ sustainability team does with its Global Supply Management organisation.
 
 ## Results on the sample data
 
-| | |
+| Metric | Value |
 |---|---|
 | Upstream footprint | **46,461 tCO₂e** ± 4,016 (1σ) |
 | Spend-based estimate alone | 37,872 tCO₂e (**18% too low**). Aluminium's real material intensity is much higher than its spend suggests |

@@ -39,6 +39,9 @@ def build(suppliers_csv: Path, factors_csv: Path, out_dir: Path, cfg: ScenarioCo
         "config": {"base_year": cfg.base_year, "target_year": cfg.target_year,
                    "business_growth": cfg.business_growth,
                    "engagement_coverage": cfg.engagement_coverage,
+                   "supplier_target_rate": cfg.supplier_target_rate,
+                   "target_adoption_year": cfg.target_adoption_year,
+                   "material_switch": {k: list(v) for k, v in cfg.material_switch.items()},
                    "suppliers_engaged": int(engaged_mask(df, cfg.engagement_coverage).sum())},
         "categories": cats.to_dict(orient="records"),
         "reducible": dict(zip(factors["category"],
@@ -66,6 +69,10 @@ def main() -> None:
     p.add_argument("--coverage", type=float, default=0.80,
                    help="engage suppliers covering this share of emissions")
     a = p.parse_args()
+    if not 0 < a.coverage <= 1:
+        p.error("--coverage must be between 0 and 1, e.g. 0.8 for 80%")
+    if not -0.5 < a.growth < 1:
+        p.error("--growth is a yearly fraction, e.g. 0.02 for 2%")
 
     r = build(a.suppliers, a.factors, a.out,
               ScenarioConfig(business_growth=a.growth, engagement_coverage=a.coverage))

@@ -15,6 +15,18 @@
     "target_year": 2030,
     "business_growth": 0.02,
     "engagement_coverage": 0.8,
+    "supplier_target_rate": 0.042,
+    "target_adoption_year": 2027,
+    "material_switch": {
+      "Aluminium": [
+        0.5,
+        0.8928571428571429
+      ],
+      "Steel wire & products": [
+        0.5,
+        0.65
+      ]
+    },
     "suppliers_engaged": 18
   },
   "categories": [

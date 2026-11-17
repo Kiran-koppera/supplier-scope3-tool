@@ -55,6 +55,8 @@ h2 { font-size: 19px; }
 svg text { font-family: var(--f-body); fill: var(--ink-2); font-size: 12px; }
 svg .tick { fill: var(--muted); font-size: 11px; font-family: var(--f-mono); }
 .chart { width: 100%; overflow-x: auto; }
+/* keep chart text legible on phones: scroll sideways instead of shrinking */
+#cat svg { min-width: 520px; } #pareto svg, #scen svg { min-width: 640px; }
 .legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12.5px; color: var(--ink-2); margin-top: 8px; }
 .legend i { display: inline-block; width: 14px; height: 3px; border-radius: 2px; vertical-align: middle; margin-right: 6px; }
 .legend i.box { height: 10px; width: 10px; }
@@ -114,7 +116,7 @@ ol.actions { margin: 0; padding-left: 18px; color: var(--ink-2); }
   </div>
 
   <section class="panel">
-    <header><div><h2>Supplier concentration</h2><p>Each bar is one supplier, largest first. The line is the cumulative share of the footprint.</p></div></header>
+    <header><div><h2>Supplier concentration</h2><p>Each bar is one supplier's tCO₂e (left axis), largest first. The line is the cumulative share of the footprint (right axis).</p></div></header>
     <div class="chart" id="pareto"></div>
     <div class="legend"><span><i class="box" style="background:var(--s1)"></i>Engaged (within coverage)</span><span><i class="box" style="background:var(--bau)"></i>Not engaged</span><span><i style="background:var(--ink)"></i>Cumulative share</span></div>
   </section>
@@ -225,8 +227,8 @@ $("#kpis").innerHTML = [
 })();
 
 // ---- Scenario model (JS port of scope3/scenarios.py so the sliders recompute live)
-const RATE = 0.042;
-const MAT = { "Aluminium": [0.5, 1 - 1.5 / 14], "Steel wire & products": [0.5, 1 - 0.7 / 2] };
+const RATE = 0.042;                       // 1.5 °C linear contraction, as in scenarios.py
+const TGT_RATE = C.supplier_target_rate, ADOPT = C.target_adoption_year, MAT = C.material_switch;
 function engagedFlags(cov) { return SUP.map(s => (s.cumulative_share - s.share) < cov - 1e-12); }
 function scenarios(cov, growth) {
   const eng = engagedFlags(cov), out = [], base = S.total_tco2e, span = C.target_year - C.base_year;
@@ -237,7 +239,7 @@ function scenarios(cov, growth) {
       const b = s.tco2e * g, reCut = s.reducible * (1 - s.renewable_electricity_share);
       const fRe = 1 - reCut * ramp * (eng[i] ? 1 : 0);
       const [ms, mc] = MAT[s.category] || [0, 0], fMat = 1 - ms * mc * ramp;
-      const yrs = s.has_sbti_target ? t : (eng[i] ? Math.max(0, year - 2027) : 0), fT = Math.pow(1 - RATE, yrs);
+      const yrs = s.has_sbti_target ? t : (eng[i] ? Math.max(0, year - ADOPT) : 0), fT = Math.pow(1 - TGT_RATE, yrs);
       r.bau += b; r.renewable_electricity += b * fRe; r.low_carbon_materials += b * fMat; r.supplier_targets += b * fT; r.combined += b * Math.min(fRe * fMat, fT);
     });
     out.push(r);

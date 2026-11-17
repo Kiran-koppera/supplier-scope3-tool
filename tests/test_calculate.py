@@ -78,3 +78,19 @@ def test_engaged_mask_reaches_coverage():
     mask = engaged_mask(df, 0.8)
     assert df.loc[mask, "share"].sum() >= 0.8
     assert df.loc[mask, "share"].sum() - df.loc[mask, "share"].iloc[-1] < 0.8
+
+
+def test_build_writes_outputs_and_injects_dashboard_data(tmp_path):
+    import json
+
+    from scope3.__main__ import build
+
+    results = build(ROOT / "data" / "suppliers.csv", ROOT / "data" / "emission_factors.csv",
+                    tmp_path, ScenarioConfig())
+    for name in ["results.json", "dashboard.html", "supplier_emissions.csv",
+                 "category_emissions.csv", "scenarios.csv", "engagement_list.csv"]:
+        assert (tmp_path / name).exists(), name
+    html = (tmp_path / "dashboard.html").read_text()
+    assert "/*__DATA__*/" not in html            # placeholder was replaced
+    assert json.loads((tmp_path / "results.json").read_text())["summary"] == results["summary"]
+    assert results["config"]["target_adoption_year"] == 2027
