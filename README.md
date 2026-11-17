@@ -5,8 +5,10 @@ Scope 3 footprint. It then shows where to engage suppliers to cut emissions.
 I built it as a working example of the supplier GHG work that a corporate
 sustainability team does with its Global Supply Management organisation.
 
-**Dashboard:** [`output/dashboard.html`](output/dashboard.html) is a single self-contained
-file. Download it and open it in any browser; no install needed. It runs on sample data.
+**[Live dashboard →](https://kiran-koppera.github.io/supplier-scope3-tool/)** (sample data)
+
+The dashboard is one self-contained file, [`output/dashboard.html`](output/dashboard.html),
+which also works offline in any browser.
 
 ## What it answers
 
