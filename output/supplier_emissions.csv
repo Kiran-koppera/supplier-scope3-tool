@@ -1,0 +1,47 @@
+supplier_id,supplier_name,country,category,ghg_category,spend_usd,tco2e,spend_based_tco2e,method,dq_score,intensity_kgco2e_per_usd,share,cumulative_share,has_sbti_target,renewable_electricity_share
+S021,Alta Metals,FR,Aluminium,Cat 1 Purchased goods,1592000,6982.416,1990.0,Average-data,3,4.385939698492463,0.1502855158254573,0.1502855158254573,False,0.0
+S020,Quarz Metals,TR,Aluminium,Cat 1 Purchased goods,1419000,6393.688,1773.75,Average-data,3,4.505770260747005,0.13761407213592494,0.28789958796138226,True,0.8
+S005,Kestrel Gases,US,Industrial gases & precursors,Cat 1 Purchased goods,3454000,3626.7,3626.7,Spend-based,4,1.05,0.07805900998224483,0.36595859794362706,True,0.6
+S008,Brava Polymers,US,Plastics & resins,Cat 1 Purchased goods,2532000,2367.6786,2329.44,Average-data,3,0.9351021327014218,0.05096055573169754,0.4169191536753246,True,0.8
+S010,Tessel Polymers,US,Plastics & resins,Cat 1 Purchased goods,2516000,1926.0948,2314.72,Average-data,3,0.7655384737678855,0.041456159379035996,0.45837531305436063,True,0.6
+S019,Nord Wire,PL,Steel wire & products,Cat 1 Purchased goods,2007000,1898.558,1906.65,Average-data,3,0.9459681116093672,0.0408634730950646,0.49923878614942524,True,0.6
+S042,Alta Logistics,TR,Freight & logistics,Cat 4 Upstream transport,2107000,1812.02,1812.02,Spend-based,4,0.86,0.03900087883420941,0.5382396649836346,False,0.0
+S003,Brava Gases,US,Industrial gases & precursors,Cat 1 Purchased goods,1302000,1367.1,1367.1,Spend-based,4,1.05,0.02942467602689136,0.567664341010526,False,0.4
+S004,Velo Gases,DE,Industrial gases & precursors,Cat 1 Purchased goods,1270000,1333.5,1333.5,Spend-based,4,1.05,0.02870148890487867,0.5963658299154047,False,1.0
+S018,Rhein Wire,JP,Steel wire & products,Cat 1 Purchased goods,1339000,1304.368,1272.05,Average-data,3,0.974135922330097,0.028074468451352665,0.6244402983667573,True,0.8
+S011,Kestrel Polymers,IN,Plastics & resins,Cat 1 Purchased goods,1450000,1257.9735,1334.0,Average-data,3,0.8675679310344827,0.027075899852179522,0.6515161982189368,False,0.6
+S007,Cobalt Polymers,IT,Plastics & resins,Cat 1 Purchased goods,1719000,1088.47676,1581.48,Supplier-specific,2,0.6332034671320536,0.023427749269110076,0.6749439474880469,False,0.4
+S024,Ferro Pack,US,Packaging & reels,Cat 1 Purchased goods,1243000,1036.3653,720.94,Average-data,3,0.8337613032984714,0.022306132103000566,0.6972500795910475,False,0.4
+S016,Lumen Wire,CZ,Steel wire & products,Cat 1 Purchased goods,1047000,1013.314,994.65,Average-data,3,0.9678261700095511,0.021809989147475235,0.7190600687385227,False,0.0
+S002,Rhein Gases,PL,Industrial gases & precursors,Cat 1 Purchased goods,960000,1008.0,1008.0,Spend-based,4,1.05,0.02169561366038073,0.7407556823989034,False,0.0
+S009,Arcon Polymers,US,Plastics & resins,Cat 1 Purchased goods,1200000,982.9701000000001,1104.0,Average-data,3,0.8191417500000001,0.021156884453676403,0.7619125668525798,False,0.0
+S036,Helix Maschinenbau,NL,Machinery & equipment,Cat 2 Capital goods,2586000,982.68,982.68,Spend-based,4,0.38,0.021150640507721162,0.783063207360301,False,0.0
+S001,Arcon Gases,CN,Industrial gases & precursors,Cat 1 Purchased goods,843000,885.15,885.15,Spend-based,4,1.05,0.019051460745521828,0.8021146681058228,True,0.6
+S012,Vista Polymers,KR,Plastics & resins,Cat 1 Purchased goods,847000,837.5104399999999,779.24,Supplier-specific,2,0.98879626918536,0.01802609418926138,0.8201407622950841,True,0.8
+S017,Cobalt Wire,PL,Steel wire & products,Cat 1 Purchased goods,861000,794.092,817.95,Average-data,3,0.9222903600464576,0.01709158059801493,0.8372323428930991,False,0.0
+S014,Lumen Fibres,NL,Aramid & synthetic yarns,Cat 1 Purchased goods,927000,715.198,787.95,Average-data,3,0.7715188781014024,0.015393511407417635,0.8526258543005167,True,1.0
+S013,Meridian Fibres,FR,Aramid & synthetic yarns,Cat 1 Purchased goods,873000,686.092,742.05,Average-data,3,0.785901489117984,0.014767050562974142,0.8673929048634909,False,0.6
+S039,Quarz Logistics,TR,Freight & logistics,Cat 4 Upstream transport,736000,632.96,632.96,Spend-based,4,0.86,0.013623467879439074,0.8810163727429299,False,1.0
+S015,Polar Fibres,PL,Aramid & synthetic yarns,Cat 1 Purchased goods,883000,603.68,750.55,Average-data,3,0.683669309173273,0.012993261958828013,0.8940096347017579,False,0.0
+S025,Rhein Pack,IN,Packaging & reels,Cat 1 Purchased goods,810000,574.7615999999999,469.79999999999995,Average-data,3,0.7095822222222222,0.01237083890914909,0.906380473610907,False,0.25
+S006,Meridian Polymers,DE,Plastics & resins,Cat 1 Purchased goods,633000,530.3739,582.36,Average-data,3,0.8378734597156399,0.011415463521775202,0.9177959371326823,False,0.1
+S032,Sintra Chemie,US,Other chemicals,Cat 1 Purchased goods,573000,446.94,446.94,Spend-based,4,0.78,0.009619680128343812,0.9274156172610261,False,0.0
+S028,Helix Pack,JP,Packaging & reels,Cat 1 Purchased goods,473000,405.33696,274.34,Supplier-specific,2,0.856949175475687,0.008724240165112298,0.9361398574261384,False,0.4
+S037,Ferro Maschinenbau,CN,Machinery & equipment,Cat 2 Capital goods,1055000,400.9,400.9,Spend-based,4,0.38,0.008628741583776422,0.9447685990099148,False,0.0
+S040,Ferro Logistics,CZ,Freight & logistics,Cat 4 Upstream transport,417000,358.62,358.62,Spend-based,4,0.86,0.007718731121910453,0.9524873301318253,True,0.4
+S041,Rhein Logistics,CZ,Freight & logistics,Cat 4 Upstream transport,341000,293.26,293.26,Spend-based,4,0.86,0.006311959982185766,0.9587992901140111,True,0.4
+S023,Ferro Cuprum,CN,Copper,Cat 1 Purchased goods,744000,273.976,461.28,Average-data,3,0.368247311827957,0.005896902230373482,0.9646961923443846,False,0.0
+S034,Tessel Chemie,JP,Other chemicals,Cat 1 Purchased goods,303000,236.34,236.34,Spend-based,4,0.78,0.0050868465600142675,0.9697830389043989,False,0.0
+S029,Orbis Electronics,PL,Electronic components,Cat 1 Purchased goods,561000,179.52,179.52,Spend-based,4,0.32,0.003863885480467806,0.9736469243848667,False,0.0
+S026,Polar Pack,CZ,Packaging & reels,Cat 1 Purchased goods,399000,168.68556,231.41999999999996,Supplier-specific,2,0.42277082706766916,0.003630691210163664,0.9772776155950303,True,0.6
+S038,Sintra Maschinenbau,JP,Machinery & equipment,Cat 2 Capital goods,402000,152.76,152.76,Spend-based,4,0.38,0.003287918594007698,0.980565534189038,False,1.0
+S031,Vista Electronics,DE,Electronic components,Cat 1 Purchased goods,439000,140.48,140.48,Spend-based,4,0.32,0.00302361091965306,0.9835891451086911,False,0.0
+S030,Arcon Electronics,JP,Electronic components,Cat 1 Purchased goods,425000,136.0,136.0,Spend-based,4,0.32,0.002927185970051368,0.9865163310787425,False,0.25
+S033,Brava Chemie,CN,Other chemicals,Cat 1 Purchased goods,158000,123.24,123.24,Spend-based,4,0.78,0.0026525470510965483,0.989168878129839,False,0.25
+S027,Orbis Pack,IT,Packaging & reels,Cat 1 Purchased goods,152000,107.3088,88.16,Average-data,3,0.705978947368421,0.002309653042816531,0.9914785311726555,True,0.4
+S043,Helix Consulting,IN,Professional & IT services,Cat 1 Purchased goods,829000,99.48,99.48,Spend-based,4,0.12,0.002141150443387574,0.9936196816160431,True,0.4
+S035,Rhein Chemie,DE,Other chemicals,Cat 1 Purchased goods,126000,98.28,98.28,Spend-based,4,0.78,0.002115322331887121,0.9957350039479302,False,0.4
+S022,Orbis Cuprum,KR,Copper,Cat 1 Purchased goods,220000,83.196,136.4,Average-data,3,0.37816363636363637,0.0017906629703264235,0.9975256669182566,False,0.0
+S045,Vista Consulting,CZ,Professional & IT services,Cat 1 Purchased goods,466000,55.92,55.92,Spend-based,4,0.12,0.0012035899959211213,0.9987292569141777,False,0.4
+S044,Orbis Consulting,US,Professional & IT services,Cat 1 Purchased goods,273000,32.76,32.76,Spend-based,4,0.11999999999999998,0.0007051074439623737,0.99943436435814,False,0.4
+S046,Alta Consulting,US,Professional & IT services,Cat 1 Purchased goods,219000,26.28,26.28,Spend-based,4,0.12,0.0005656356418599261,1.0,True,0.8

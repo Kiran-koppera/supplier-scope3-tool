@@ -1,0 +1,353 @@
+<title>Supplier Carbon Hotspots</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one reading column of panels: KPIs, then where (categories), who (suppliers), how good (data quality), what next (scenarios, engagement). */
+:root {
+  --bg: #f4f6f5; --surface: #fcfcfb; --ink: #0f1a1a; --ink-2: #4c5654; --muted: #7d8582;
+  --line: #e1e3df; --axis: #c3c6c0; --ring: rgba(11,11,11,.10);
+  --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s4: #eda100; --bau: #a3a8a4;
+  --q1: #1c5cab; --q2: #3987e5; --q3: #6da7ec; --q4: #9ec5f4;
+  --good: #0ca30c; --warn: #fab219; --serious: #ec835a; --critical: #d03b3b;
+  --chip-ink: #0b0b0b;
+  --f-display: "Bricolage Grotesque", "IBM Plex Sans", system-ui, sans-serif;
+  --f-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0e1010; --surface: #1a1b1b; --ink: #eef0ee; --ink-2: #bfc4c0; --muted: #8b918d;
+  --line: #2c2e2d; --axis: #3a3d3b; --ring: rgba(255,255,255,.10);
+  --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500; --bau: #6b706c;
+  --q1: #6da7ec; --q2: #3987e5; --q3: #256abf; --q4: #184f95; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0e1010; --surface: #1a1b1b; --ink: #eef0ee; --ink-2: #bfc4c0; --muted: #8b918d;
+  --line: #2c2e2d; --axis: #3a3d3b; --ring: rgba(255,255,255,.10);
+  --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500; --bau: #6b706c;
+  --q1: #6da7ec; --q2: #3987e5; --q3: #256abf; --q4: #184f95; color-scheme: dark; }
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font: 15px/1.5 var(--f-body);
+  padding-block: 28px 56px; padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.wrap { max-width: 1120px; margin: 0 auto; display: grid; gap: 20px; }
+h1, h2 { font-family: var(--f-display); text-wrap: balance; margin: 0; letter-spacing: -.01em; }
+h1 { font-size: clamp(28px, 4.2vw, 40px); line-height: 1.1; }
+h2 { font-size: 19px; }
+.eyebrow { font: 500 12px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.lede { color: var(--ink-2); max-width: 68ch; margin: 8px 0 0; }
+.sample { display: inline-block; margin-top: 10px; font: 500 12px var(--f-mono); color: var(--ink-2);
+  border: 1px dashed var(--axis); border-radius: 4px; padding: 2px 8px; }
+.num { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(165px, 1fr)); gap: 12px; }
+.kpi { background: var(--surface); border: 1px solid var(--ring); border-radius: 8px; padding: 14px 16px; min-width: 0; }
+.kpi .v { font: 600 26px/1.2 var(--f-mono); font-variant-numeric: tabular-nums; margin-top: 4px; }
+.kpi .v small { font-size: 14px; color: var(--ink-2); font-weight: 400; }
+.kpi .n { color: var(--ink-2); font-size: 13px; margin-top: 2px; }
+
+.panel { background: var(--surface); border: 1px solid var(--ring); border-radius: 8px; padding: 18px 20px; min-width: 0; }
+.panel header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 6px 16px; margin-bottom: 12px; }
+.panel header p { margin: 2px 0 0; color: var(--ink-2); font-size: 13.5px; max-width: 70ch; }
+.grid2 { display: grid; grid-template-columns: 1.35fr 1fr; gap: 20px; }
+@media (max-width: 860px) { .grid2 { grid-template-columns: 1fr; } }
+
+svg text { font-family: var(--f-body); fill: var(--ink-2); font-size: 12px; }
+svg .tick { fill: var(--muted); font-size: 11px; font-family: var(--f-mono); }
+.chart { width: 100%; overflow-x: auto; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12.5px; color: var(--ink-2); margin-top: 8px; }
+.legend i { display: inline-block; width: 14px; height: 3px; border-radius: 2px; vertical-align: middle; margin-right: 6px; }
+.legend i.box { height: 10px; width: 10px; }
+.legend i.dash { background: repeating-linear-gradient(90deg, var(--ink) 0 4px, transparent 4px 7px) !important; }
+
+.controls { display: flex; flex-wrap: wrap; gap: 10px 22px; align-items: center; margin-bottom: 10px; font-size: 13px; color: var(--ink-2); }
+.controls label { display: flex; align-items: center; gap: 8px; }
+.controls output { font-family: var(--f-mono); color: var(--ink); min-width: 3.5ch; }
+input[type=range] { accent-color: var(--s1); width: 130px; }
+select { font: inherit; font-size: 13px; color: var(--ink); background: var(--surface); border: 1px solid var(--axis); border-radius: 6px; padding: 4px 8px; }
+:focus-visible { outline: 2px solid var(--s1); outline-offset: 2px; }
+
+.verdict { display: flex; gap: 10px; align-items: center; font-size: 14px; margin-top: 10px; flex-wrap: wrap; }
+.pill { display: inline-flex; align-items: center; gap: 6px; font: 600 12px var(--f-mono); padding: 3px 9px; border-radius: 999px; color: var(--chip-ink); }
+.pill.ok { background: var(--good); color: #fff; } .pill.gap { background: var(--warn); }
+
+.tablewrap { overflow-x: auto; max-height: 460px; overflow-y: auto; border-top: 1px solid var(--line); }
+table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+th { position: sticky; top: 0; background: var(--surface); text-align: left; font: 500 11.5px var(--f-mono); letter-spacing: .05em; text-transform: uppercase; color: var(--muted); padding: 8px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; cursor: pointer; }
+th[data-k]:hover { color: var(--ink); }
+td { padding: 7px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+td.r, th.r { text-align: right; }
+.dq { display: inline-block; min-width: 26px; text-align: center; font: 600 11.5px var(--f-mono); border-radius: 4px; padding: 1px 6px; color: #fff; }
+.dq1 { background: var(--q1); } .dq2 { background: var(--q2); } .dq3 { background: var(--q3); color: var(--chip-ink); } .dq4 { background: var(--q4); color: var(--chip-ink); }
+.bar-in { height: 6px; border-radius: 3px; background: var(--s1); }
+.yes { color: var(--ink); } .no { color: var(--muted); }
+ol.actions { margin: 0; padding-left: 18px; color: var(--ink-2); }
+
+#tip { position: fixed; pointer-events: none; z-index: 20; background: var(--surface); color: var(--ink); border: 1px solid var(--ring);
+  box-shadow: 0 4px 16px rgba(0,0,0,.14); border-radius: 6px; padding: 8px 10px; font-size: 12.5px; max-width: 260px; }
+#tip b { font-weight: 600; } #tip .row { display: flex; justify-content: space-between; gap: 14px; }
+.method p { margin: 0 0 8px; color: var(--ink-2); font-size: 13.5px; max-width: 80ch; }
+.method code { font-family: var(--f-mono); font-size: 12.5px; }
+@media (prefers-reduced-motion: no-preference) { .bar-in, rect.m { transition: width .25s, opacity .2s; } }
+</style>
+
+<div class="wrap">
+  <div>
+    <div class="eyebrow">Scope 3 · Cat 1, 2 &amp; 4 · Base year <span id="by"></span></div>
+    <h1>Supplier Carbon Hotspots</h1>
+    <p class="lede">Upstream emissions of a fictional optical fibre &amp; cable plant, estimated supplier by supplier with the GHG Protocol hierarchy: supplier product footprints first, then average material factors, then spend-based factors. The page shows where the tonnes are, how much of the estimate rests on primary data, and which suppliers to engage first.</p>
+    <span class="sample">Sample data · fictional suppliers · illustrative emission factors</span>
+  </div>
+
+  <section class="kpis" id="kpis"></section>
+
+  <div class="grid2">
+    <section class="panel">
+      <header><div><h2>Where the tonnes are</h2><p>tCO₂e by purchase category. Intensity shows kgCO₂e per USD spent.</p></div></header>
+      <div class="chart" id="cat"></div>
+    </section>
+    <section class="panel">
+      <header><div><h2>How good is the data</h2><p>Share of the footprint by calculation method. DQ 1 is verified supplier data; DQ 4 is a spend-based estimate.</p></div></header>
+      <div class="chart" id="dq"></div>
+      <div id="dqnote" style="font-size:13.5px;color:var(--ink-2);margin-top:12px"></div>
+    </section>
+  </div>
+
+  <section class="panel">
+    <header><div><h2>Supplier concentration</h2><p>Each bar is one supplier, largest first. The line is the cumulative share of the footprint.</p></div></header>
+    <div class="chart" id="pareto"></div>
+    <div class="legend"><span><i class="box" style="background:var(--s1)"></i>Engaged (within coverage)</span><span><i class="box" style="background:var(--bau)"></i>Not engaged</span><span><i style="background:var(--ink)"></i>Cumulative share</span></div>
+  </section>
+
+  <section class="panel">
+    <header><div><h2>Path to <span id="ty"></span></h2><p>Business-as-usual growth against three supplier levers. Combined applies renewable power and material switches together, or the supplier's own target where that cuts more.</p></div></header>
+    <div class="controls">
+      <label for="cov">Engage suppliers covering <input id="cov" type="range" min="0.3" max="1" step="0.05"><output id="covo"></output></label>
+      <label for="gro">Business growth / yr <input id="gro" type="range" min="0" max="0.06" step="0.005"><output id="groo"></output></label>
+    </div>
+    <div class="chart" id="scen"></div>
+    <div class="legend" id="scenlegend"></div>
+    <div class="verdict" id="verdict"></div>
+  </section>
+
+  <section class="panel">
+    <header><div><h2>Engage these suppliers first</h2><p>Ranked by share of footprint, weighted up for poor data quality and for suppliers without a science-based target.</p></div></header>
+    <div class="tablewrap"><table id="eng"></table></div>
+  </section>
+
+  <section class="panel">
+    <header><div><h2>All suppliers</h2><p>Click a column to sort.</p></div>
+      <div class="controls" style="margin:0">
+        <label for="fcat">Category <select id="fcat"><option value="">All</option></select></label>
+        <label for="fmet">Method <select id="fmet"><option value="">All</option></select></label>
+      </div></header>
+    <div class="tablewrap"><table id="sup"></table></div>
+  </section>
+
+  <section class="panel method">
+    <header><h2>Method notes</h2></header>
+    <p><b>Hierarchy.</b> Supplier-specific: <code>kg × supplier PCF</code> (DQ 1 if third-party verified, else 2). Average-data: <code>kg × industry factor</code> (DQ 3). Spend-based: <code>USD × EEIO factor</code> (DQ 4). Uncertainty uses ±10/20/30/50% by DQ, combined as root-sum-square.</p>
+    <p><b>Levers.</b> Renewable power removes the electricity-related share of a category's footprint that is not already renewable, ramping linearly to the target year for engaged suppliers. Material switch moves 50% of aluminium to recycled and 50% of steel to EAF. Suppliers with a science-based target cut 4.2% a year; engaged suppliers adopt one from 2027.</p>
+    <p><b>1.5 °C line.</b> Linear absolute contraction of 4.2% a year from the base year. Emission factors are illustrative placeholders; swap in USEEIO, EXIOBASE or ecoinvent values before using the numbers.</p>
+  </section>
+</div>
+<div id="tip" hidden></div>
+
+<script>
+const DATA = {"summary": {"total_tco2e": 46461.00432, "uncertainty_tco2e": 4016.1464464053024, "total_spend_usd": 45731000.0, "spend_based_total_tco2e": 37872.07, "n_suppliers": 46, "suppliers_for_80pct": 18, "primary_data_coverage": 0.05380877483364742, "weighted_dq_score": 3.256750374956165, "sbti_coverage": 0.45217662655984525}, "config": {"base_year": 2025, "target_year": 2030, "business_growth": 0.02, "engagement_coverage": 0.8, "suppliers_engaged": 18}, "categories": [{"category": "Aluminium", "ghg_category": "Cat 1 Purchased goods", "tco2e": 13376.104, "spend_usd": 3011000, "suppliers": 2, "intensity_kgco2e_per_usd": 4.442412487545666, "share": 0.2878995879613822}, {"category": "Plastics & resins", "ghg_category": "Cat 1 Purchased goods", "tco2e": 8991.0781, "spend_usd": 10897000, "suppliers": 7, "intensity_kgco2e_per_usd": 0.8250966412774159, "share": 0.19351880639673613}, {"category": "Industrial gases & precursors", "ghg_category": "Cat 1 Purchased goods", "tco2e": 8220.449999999999, "spend_usd": 7829000, "suppliers": 5, "intensity_kgco2e_per_usd": 1.0499999999999998, "share": 0.17693224931991738}, {"category": "Steel wire & products", "ghg_category": "Cat 1 Purchased goods", "tco2e": 5010.332, "spend_usd": 5254000, "suppliers": 4, "intensity_kgco2e_per_usd": 0.9536223829463266, "share": 0.10783951129190744}, {"category": "Freight & logistics", "ghg_category": "Cat 4 Upstream transport", "tco2e": 3096.86, "spend_usd": 3601000, "suppliers": 4, "intensity_kgco2e_per_usd": 0.86, "share": 0.0666550378177447}, {"category": "Packaging & reels", "ghg_category": "Cat 1 Purchased goods", "tco2e": 2292.45822, "spend_usd": 3077000, "suppliers": 5, "intensity_kgco2e_per_usd": 0.7450302957426065, "share": 0.04934155543024215}, {"category": "Aramid & synthetic yarns", "ghg_category": "Cat 1 Purchased goods", "tco2e": 2004.9699999999998, "spend_usd": 2683000, "suppliers": 3, "intensity_kgco2e_per_usd": 0.747286619455833, "share": 0.043153823929219785}, {"category": "Machinery & equipment", "ghg_category": "Cat 2 Capital goods", "tco2e": 1536.34, "spend_usd": 4043000, "suppliers": 3, "intensity_kgco2e_per_usd": 0.38, "share": 0.033067300685505285}, {"category": "Other chemicals", "ghg_category": "Cat 1 Purchased goods", "tco2e": 904.8, "spend_usd": 1160000, "suppliers": 4, "intensity_kgco2e_per_usd": 0.78, "share": 0.019474396071341746}, {"category": "Electronic components", "ghg_category": "Cat 1 Purchased goods", "tco2e": 456.0, "spend_usd": 1425000, "suppliers": 3, "intensity_kgco2e_per_usd": 0.32, "share": 0.009814682370172235}, {"category": "Copper", "ghg_category": "Cat 1 Purchased goods", "tco2e": 357.172, "spend_usd": 964000, "suppliers": 2, "intensity_kgco2e_per_usd": 0.3705103734439834, "share": 0.007687565200699907}, {"category": "Professional & IT services", "ghg_category": "Cat 1 Purchased goods", "tco2e": 214.44, "spend_usd": 1787000, "suppliers": 4, "intensity_kgco2e_per_usd": 0.12, "share": 0.004615483525130995}], "reducible": {"Industrial gases & precursors": 0.55, "Plastics & resins": 0.2, "Aramid & synthetic yarns": 0.35, "Steel wire & products": 0.15, "Aluminium": 0.6, "Copper": 0.4, "Packaging & reels": 0.25, "Electronic components": 0.45, "Other chemicals": 0.3, "Machinery & equipment": 0.3, "Freight & logistics": 0.05, "Professional & IT services": 0.5}, "suppliers": [{"supplier_id": "S021", "supplier_name": "Alta Metals", "country": "FR", "category": "Aluminium", "ghg_category": "Cat 1 Purchased goods", "spend_usd": 1592000, "tco2e": 6982.416, "spend_based_tco2e": 1990.0, "method": "Average-data", "dq_score": 3, "intensity_kgco2e_per_usd": 4.385939698492463, "share": 0.1502855158254573, "cumulative_share": 0.1502855158254573, "has_sbti_target": false, "renewable_electricity_share": 0.0}, {"supplier_id": "S020", "supplier_name": "Quarz Metals", "country": "TR", "category": "Aluminium", "ghg_category": "Cat 1 Purchased goods", "spend_usd": 1419000, "tco2e": 6393.688, "spend_based_tco2e": 1773.75, "method": "Average-data", "dq_score": 3, "intensity_kgco2e_per_usd": 4.505770260747005, "share": 0.13761407213592494, "cumulative_share": 0.28789958796138226, "has_sbti_target": true, "renewable_electricity_share": 0.8}, {"supplier_id": "S005", "supplier_name": "Kestrel Gases", "country": "US", "category": "Industrial gases & precursors", "ghg_category": "Cat 1 Purchased goods", "spend_usd": 3454000, "tco2e": 3626.7, "spend_based_tco2e": 3626.7, "method": "Spend-based", "dq_score": 4, "intensity_kgco2e_per_usd": 1.05, "share": 0.07805900998224483, "cumulative_share": 0.36595859794362706, "has_sbti_target": true, "renewable_electricity_share": 0.6}, {"supplier_id": "S008", "supplier_name": "Brava Polymers", "country": "US", "category": "Plastics & resins", "ghg_category": "Cat 1 Purchased goods", "spend_usd": 2532000, "tco2e": 2367.6786, "spend_based_tco2e": 2329.44, "method": "Average-data", "dq_score": 3, "intensity_kgco2e_per_usd": 0.9351021327014218, "share": 0.05096055573169754, "cumulative_share": 0.4169191536753246, "has_sbti_target": true, "renewable_electricity_share": 0.8}, {"supplier_id": "S010", "supplier_name": "Tessel Polymers", "country": "US", "category": "Plastics & resins", "ghg_category": "Cat 1 Purchased goods", "spend_usd": 2516000, "tco2e": 1926.0948, "spend_based_tco2e": 2314.72, "method": "Average-data", "dq_score": 3, "intensity_kgco2e_per_usd": 0.7655384737678855, "share": 0.041456159379035996, "cumulative_share": 0.45837531305436063, "has_sbti_target": true, "renewable_electricity_share": 0.6}, {"supplier_id": "S019", "supplier_name": "Nord Wire", "country": "PL", "category": "Steel wire & products", "ghg_category": "Cat 1 Purchased goods", "spend_usd": 2007000, "tco2e": 1898.558, "spend_based_tco2e": 1906.65, "method": "Average-data", "dq_score": 3, "intensity_kgco2e_per_usd": 0.9459681116093672, "share": 0.0408634730950646, "cumulative_share": 0.49923878614942524, "has_sbti_target": true, "renewable_electricity_share": 0.6}, {"supplier_id": "S042", "supplier_name": "Alta Logistics", "country": "TR", "category": "Freight & logistics", "ghg_category": "Cat 4 Upstream transport", "spend_usd": 2107000, "tco2e": 1812.02, "spend_based_tco2e": 1812.02, "method": "Spend-based", "dq_score": 4, "intensity_kgco2e_per_usd": 0.86, "share": 0.03900087883420941, "cumulative_share": 0.5382396649836346, "has_sbti_target": false, "renewable_electricity_share": 0.0}, {"supplier_id": "S003", "supplier_name": "Brava Gases", "country": "US", "category": "Industrial gases & precursors", "ghg_category": "Cat 1 Purchased goods", "spend_usd": 1302000, "tco2e": 1367.1, "spend_based_tco2e": 1367.1, "method": "Spend-based", "dq_score": 4, "intensity_kgco2e_per_usd": 1.05, "share": 0.02942467602689136, "cumulative_share": 0.567664341010526, "has_sbti_target": false, "renewable_electricity_share": 0.4}, {"supplier_id": "S004", "supplier_name": "Velo Gases", "country": "DE", "category": "Industrial gases & precursors", "ghg_category": "Cat 1 Purchased goods", "spend_usd": 1270000, "tco2e": 1333.5, "spend_based_tco2e": 1333.5, "method": "Spend-based", "dq_score": 4, "intensity_kgco2e_per_usd": 1.05, "share": 0.02870148890487867, "cumulative_share": 0.5963658299154047, "has_sbti_target": false, "renewable_electricity_share": 1.0}, {"supplier_id": "S018", "supplier_name": "Rhein Wire", "country": "JP", "category": "Steel wire & products", "ghg_category": "Cat 1 Purchased goods", "spend_usd": 1339000, "tco2e": 1304.368, "spend_based_tco2e": 1272.05, "method": "Average-data", "dq_score": 3, "intensity_kgco2e_per_usd": 0.974135922330097, "share": 0.028074468451352665, "cumulative_share": 0.6244402983667573, "has_sbti_target": true, "renewable_electricity_share": 0.8}, {"supplier_id": "S011", "supplier_name": "Kestrel Polymers", "country": "IN", "category": "Plastics & resins", "ghg_category": "Cat 1 Purchased goods", "spend_usd": 1450000, "tco2e": 1257.9735, "spend_based_tco2e": 1334.0, "method": "Average-data", "dq_score": 3, "intensity_kgco2e_per_usd": 0.8675679310344827, "share": 0.027075899852179522, "cumulative_share": 0.6515161982189368, "has_sbti_target": false, "renewable_electricity_share": 0.6}, {"supplier_id": "S007", "supplier_name": "Cobalt Polymers", "country": "IT", "category": "Plastics & resins", "ghg_category": "Cat 1 Purchased goods", "spend_usd": 1719000, "tco2e": 1088.47676, "spend_based_tco2e": 1581.48, "method": "Supplier-specific", "dq_score": 2, "intensity_kgco2e_per_usd": 0.6332034671320536, "share": 0.023427749269110076, "cumulative_share": 0.6749439474880469, "has_sbti_target": false, "renewable_electricity_share": 0.4}, {"supplier_id": "S024", "supplier_name": "Ferro Pack", "country": "US", "category": "Packaging & reels", "ghg_category": "Cat 1 Purchased goods", "spend_usd": 1243000, "tco2e": 1036.3653, "spend_based_tco2e": 720.94, "method": "Average-data", "dq_score": 3, "intensity_kgco2e_per_usd": 0.8337613032984714, "share": 0.022306132103000566, "cumulative_share": 0.6972500795910475, "has_sbti_target": false, "renewable_electricity_share": 0.4}, {"supplier_id": "S016", "supplier_name": "Lumen Wire", "country": "CZ", "category": "Steel wire & products", "ghg_category": "Cat 1 Purchased goods", "spend_usd": 1047000, "tco2e": 1013.314, "spend_based_tco2e": 994.65, "method": "Average-data", "dq_score": 3, "intensity_kgco2e_per_usd": 0.9678261700095511, "share": 0.021809989147475235, "cumulative_share": 0.7190600687385227, "has_sbti_target": false, "renewable_electricity_share": 0.0}, {"supplier_id": "S002", "supplier_name": "Rhein Gases", "country": "PL", "category": "Industrial gases & precursors", "ghg_category": "Cat 1 Purchased goods", "spend_usd": 960000, "tco2e": 1008.0, "spend_based_tco2e": 1008.0, "method": "Spend-based", "dq_score": 4, "intensity_kgco2e_per_usd": 1.05, "share": 0.02169561366038073, "cumulative_share": 0.7407556823989034, "has_sbti_target": false, "renewable_electricity_share": 0.0}, {"supplier_id": "S009", "supplier_name": "Arcon Polymers", "country": "US", "category": "Plastics & resins", "ghg_category": "Cat 1 Purchased goods", "spend_usd": 1200000, "tco2e": 982.9701000000001, "spend_based_tco2e": 1104.0, "method": "Average-data", "dq_score": 3, "intensity_kgco2e_per_usd": 0.8191417500000001, "share": 0.021156884453676403, "cumulative_share": 0.7619125668525798, "has_sbti_target": false, "renewable_electricity_share": 0.0}, {"supplier_id": "S036", "supplier_name": "Helix Maschinenbau", "country": "NL", "category": "Machinery & equipment", "ghg_category": "Cat 2 Capital goods", "spend_usd": 2586000, "tco2e": 982.68, "spend_based_tco2e": 982.68, "method": "Spend-based", "dq_score": 4, "intensity_kgco2e_per_usd": 0.38, "share": 0.021150640507721162, "cumulative_share": 0.783063207360301, "has_sbti_target": false, "renewable_electricity_share": 0.0}, {"supplier_id": "S001", "supplier_name": "Arcon Gases", "country": "CN", "category": "Industrial gases & precursors", "ghg_category": "Cat 1 Purchased goods", "spend_usd": 843000, "tco2e": 885.15, "spend_based_tco2e": 885.15, "method": "Spend-based", "dq_score": 4, "intensity_kgco2e_per_usd": 1.05, "share": 0.019051460745521828, "cumulative_share": 0.8021146681058228, "has_sbti_target": true, "renewable_electricity_share": 0.6}, {"supplier_id": "S012", "supplier_name": "Vista Polymers", "country": "KR", "category": "Plastics & resins", "ghg_category": "Cat 1 Purchased goods", "spend_usd": 847000, "tco2e": 837.5104399999999, "spend_based_tco2e": 779.24, "method": "Supplier-specific", "dq_score": 2, "intensity_kgco2e_per_usd": 0.98879626918536, "share": 0.01802609418926138, "cumulative_share": 0.8201407622950841, "has_sbti_target": true, "renewable_electricity_share": 0.8}, {"supplier_id": "S017", "supplier_name": "Cobalt Wire", "country": "PL", "category": "Steel wire & products", "ghg_category": "Cat 1 Purchased goods", "spend_usd": 861000, "tco2e": 794.092, "spend_based_tco2e": 817.95, "method": "Average-data", "dq_score": 3, "intensity_kgco2e_per_usd": 0.9222903600464576, "share": 0.01709158059801493, "cumulative_share": 0.8372323428930991, "has_sbti_target": false, "renewable_electricity_share": 0.0}, {"supplier_id": "S014", "supplier_name": "Lumen Fibres", "country": "NL", "category": "Aramid & synthetic yarns", "ghg_category": "Cat 1 Purchased goods", "spend_usd": 927000, "tco2e": 715.198, "spend_based_tco2e": 787.95, "method": "Average-data", "dq_score": 3, "intensity_kgco2e_per_usd": 0.7715188781014024, "share": 0.015393511407417635, "cumulative_share": 0.8526258543005167, "has_sbti_target": true, "renewable_electricity_share": 1.0}, {"supplier_id": "S013", "supplier_name": "Meridian Fibres", "country": "FR", "category": "Aramid & synthetic yarns", "ghg_category": "Cat 1 Purchased goods", "spend_usd": 873000, "tco2e": 686.092, "spend_based_tco2e": 742.05, "method": "Average-data", "dq_score": 3, "intensity_kgco2e_per_usd": 0.785901489117984, "share": 0.014767050562974142, "cumulative_share": 0.8673929048634909, "has_sbti_target": false, "renewable_electricity_share": 0.6}, {"supplier_id": "S039", "supplier_name": "Quarz Logistics", "country": "TR", "category": "Freight & logistics", "ghg_category": "Cat 4 Upstream transport", "spend_usd": 736000, "tco2e": 632.96, "spend_based_tco2e": 632.96, "method": "Spend-based", "dq_score": 4, "intensity_kgco2e_per_usd": 0.86, "share": 0.013623467879439074, "cumulative_share": 0.8810163727429299, "has_sbti_target": false, "renewable_electricity_share": 1.0}, {"supplier_id": "S015", "supplier_name": "Polar Fibres", "country": "PL", "category": "Aramid & synthetic yarns", "ghg_category": "Cat 1 Purchased goods", "spend_usd": 883000, "tco2e": 603.68, "spend_based_tco2e": 750.55, "method": "Average-data", "dq_score": 3, "intensity_kgco2e_per_usd": 0.683669309173273, "share": 0.012993261958828013, "cumulative_share": 0.8940096347017579, "has_sbti_target": false, "renewable_electricity_share": 0.0}, {"supplier_id": "S025", "supplier_name": "Rhein Pack", "country": "IN", "category": "Packaging & reels", "ghg_category": "Cat 1 Purchased goods", "spend_usd": 810000, "tco2e": 574.7615999999999, "spend_based_tco2e": 469.79999999999995, "method": "Average-data", "dq_score": 3, "intensity_kgco2e_per_usd": 0.7095822222222222, "share": 0.01237083890914909, "cumulative_share": 0.906380473610907, "has_sbti_target": false, "renewable_electricity_share": 0.25}, {"supplier_id": "S006", "supplier_name": "Meridian Polymers", "country": "DE", "category": "Plastics & resins", "ghg_category": "Cat 1 Purchased goods", "spend_usd": 633000, "tco2e": 530.3739, "spend_based_tco2e": 582.36, "method": "Average-data", "dq_score": 3, "intensity_kgco2e_per_usd": 0.8378734597156399, "share": 0.011415463521775202, "cumulative_share": 0.9177959371326823, "has_sbti_target": false, "renewable_electricity_share": 0.1}, {"supplier_id": "S032", "supplier_name": "Sintra Chemie", "country": "US", "category": "Other chemicals", "ghg_category": "Cat 1 Purchased goods", "spend_usd": 573000, "tco2e": 446.94, "spend_based_tco2e": 446.94, "method": "Spend-based", "dq_score": 4, "intensity_kgco2e_per_usd": 0.78, "share": 0.009619680128343812, "cumulative_share": 0.9274156172610261, "has_sbti_target": false, "renewable_electricity_share": 0.0}, {"supplier_id": "S028", "supplier_name": "Helix Pack", "country": "JP", "category": "Packaging & reels", "ghg_category": "Cat 1 Purchased goods", "spend_usd": 473000, "tco2e": 405.33696, "spend_based_tco2e": 274.34, "method": "Supplier-specific", "dq_score": 2, "intensity_kgco2e_per_usd": 0.856949175475687, "share": 0.008724240165112298, "cumulative_share": 0.9361398574261384, "has_sbti_target": false, "renewable_electricity_share": 0.4}, {"supplier_id": "S037", "supplier_name": "Ferro Maschinenbau", "country": "CN", "category": "Machinery & equipment", "ghg_category": "Cat 2 Capital goods", "spend_usd": 1055000, "tco2e": 400.9, "spend_based_tco2e": 400.9, "method": "Spend-based", "dq_score": 4, "intensity_kgco2e_per_usd": 0.38, "share": 0.008628741583776422, "cumulative_share": 0.9447685990099148, "has_sbti_target": false, "renewable_electricity_share": 0.0}, {"supplier_id": "S040", "supplier_name": "Ferro Logistics", "country": "CZ", "category": "Freight & logistics", "ghg_category": "Cat 4 Upstream transport", "spend_usd": 417000, "tco2e": 358.62, "spend_based_tco2e": 358.62, "method": "Spend-based", "dq_score": 4, "intensity_kgco2e_per_usd": 0.86, "share": 0.007718731121910453, "cumulative_share": 0.9524873301318253, "has_sbti_target": true, "renewable_electricity_share": 0.4}, {"supplier_id": "S041", "supplier_name": "Rhein Logistics", "country": "CZ", "category": "Freight & logistics", "ghg_category": "Cat 4 Upstream transport", "spend_usd": 341000, "tco2e": 293.26, "spend_based_tco2e": 293.26, "method": "Spend-based", "dq_score": 4, "intensity_kgco2e_per_usd": 0.86, "share": 0.006311959982185766, "cumulative_share": 0.9587992901140111, "has_sbti_target": true, "renewable_electricity_share": 0.4}, {"supplier_id": "S023", "supplier_name": "Ferro Cuprum", "country": "CN", "category": "Copper", "ghg_category": "Cat 1 Purchased goods", "spend_usd": 744000, "tco2e": 273.976, "spend_based_tco2e": 461.28, "method": "Average-data", "dq_score": 3, "intensity_kgco2e_per_usd": 0.368247311827957, "share": 0.005896902230373482, "cumulative_share": 0.9646961923443846, "has_sbti_target": false, "renewable_electricity_share": 0.0}, {"supplier_id": "S034", "supplier_name": "Tessel Chemie", "country": "JP", "category": "Other chemicals", "ghg_category": "Cat 1 Purchased goods", "spend_usd": 303000, "tco2e": 236.34, "spend_based_tco2e": 236.34, "method": "Spend-based", "dq_score": 4, "intensity_kgco2e_per_usd": 0.78, "share": 0.0050868465600142675, "cumulative_share": 0.9697830389043989, "has_sbti_target": false, "renewable_electricity_share": 0.0}, {"supplier_id": "S029", "supplier_name": "Orbis Electronics", "country": "PL", "category": "Electronic components", "ghg_category": "Cat 1 Purchased goods", "spend_usd": 561000, "tco2e": 179.52, "spend_based_tco2e": 179.52, "method": "Spend-based", "dq_score": 4, "intensity_kgco2e_per_usd": 0.32, "share": 0.003863885480467806, "cumulative_share": 0.9736469243848667, "has_sbti_target": false, "renewable_electricity_share": 0.0}, {"supplier_id": "S026", "supplier_name": "Polar Pack", "country": "CZ", "category": "Packaging & reels", "ghg_category": "Cat 1 Purchased goods", "spend_usd": 399000, "tco2e": 168.68556, "spend_based_tco2e": 231.41999999999996, "method": "Supplier-specific", "dq_score": 2, "intensity_kgco2e_per_usd": 0.42277082706766916, "share": 0.003630691210163664, "cumulative_share": 0.9772776155950303, "has_sbti_target": true, "renewable_electricity_share": 0.6}, {"supplier_id": "S038", "supplier_name": "Sintra Maschinenbau", "country": "JP", "category": "Machinery & equipment", "ghg_category": "Cat 2 Capital goods", "spend_usd": 402000, "tco2e": 152.76, "spend_based_tco2e": 152.76, "method": "Spend-based", "dq_score": 4, "intensity_kgco2e_per_usd": 0.38, "share": 0.003287918594007698, "cumulative_share": 0.980565534189038, "has_sbti_target": false, "renewable_electricity_share": 1.0}, {"supplier_id": "S031", "supplier_name": "Vista Electronics", "country": "DE", "category": "Electronic components", "ghg_category": "Cat 1 Purchased goods", "spend_usd": 439000, "tco2e": 140.48, "spend_based_tco2e": 140.48, "method": "Spend-based", "dq_score": 4, "intensity_kgco2e_per_usd": 0.32, "share": 0.00302361091965306, "cumulative_share": 0.9835891451086911, "has_sbti_target": false, "renewable_electricity_share": 0.0}, {"supplier_id": "S030", "supplier_name": "Arcon Electronics", "country": "JP", "category": "Electronic components", "ghg_category": "Cat 1 Purchased goods", "spend_usd": 425000, "tco2e": 136.0, "spend_based_tco2e": 136.0, "method": "Spend-based", "dq_score": 4, "intensity_kgco2e_per_usd": 0.32, "share": 0.002927185970051368, "cumulative_share": 0.9865163310787425, "has_sbti_target": false, "renewable_electricity_share": 0.25}, {"supplier_id": "S033", "supplier_name": "Brava Chemie", "country": "CN", "category": "Other chemicals", "ghg_category": "Cat 1 Purchased goods", "spend_usd": 158000, "tco2e": 123.24, "spend_based_tco2e": 123.24, "method": "Spend-based", "dq_score": 4, "intensity_kgco2e_per_usd": 0.78, "share": 0.0026525470510965483, "cumulative_share": 0.989168878129839, "has_sbti_target": false, "renewable_electricity_share": 0.25}, {"supplier_id": "S027", "supplier_name": "Orbis Pack", "country": "IT", "category": "Packaging & reels", "ghg_category": "Cat 1 Purchased goods", "spend_usd": 152000, "tco2e": 107.3088, "spend_based_tco2e": 88.16, "method": "Average-data", "dq_score": 3, "intensity_kgco2e_per_usd": 0.705978947368421, "share": 0.002309653042816531, "cumulative_share": 0.9914785311726555, "has_sbti_target": true, "renewable_electricity_share": 0.4}, {"supplier_id": "S043", "supplier_name": "Helix Consulting", "country": "IN", "category": "Professional & IT services", "ghg_category": "Cat 1 Purchased goods", "spend_usd": 829000, "tco2e": 99.48, "spend_based_tco2e": 99.48, "method": "Spend-based", "dq_score": 4, "intensity_kgco2e_per_usd": 0.12, "share": 0.002141150443387574, "cumulative_share": 0.9936196816160431, "has_sbti_target": true, "renewable_electricity_share": 0.4}, {"supplier_id": "S035", "supplier_name": "Rhein Chemie", "country": "DE", "category": "Other chemicals", "ghg_category": "Cat 1 Purchased goods", "spend_usd": 126000, "tco2e": 98.28, "spend_based_tco2e": 98.28, "method": "Spend-based", "dq_score": 4, "intensity_kgco2e_per_usd": 0.78, "share": 0.002115322331887121, "cumulative_share": 0.9957350039479302, "has_sbti_target": false, "renewable_electricity_share": 0.4}, {"supplier_id": "S022", "supplier_name": "Orbis Cuprum", "country": "KR", "category": "Copper", "ghg_category": "Cat 1 Purchased goods", "spend_usd": 220000, "tco2e": 83.196, "spend_based_tco2e": 136.4, "method": "Average-data", "dq_score": 3, "intensity_kgco2e_per_usd": 0.37816363636363637, "share": 0.0017906629703264235, "cumulative_share": 0.9975256669182566, "has_sbti_target": false, "renewable_electricity_share": 0.0}, {"supplier_id": "S045", "supplier_name": "Vista Consulting", "country": "CZ", "category": "Professional & IT services", "ghg_category": "Cat 1 Purchased goods", "spend_usd": 466000, "tco2e": 55.92, "spend_based_tco2e": 55.92, "method": "Spend-based", "dq_score": 4, "intensity_kgco2e_per_usd": 0.12, "share": 0.0012035899959211213, "cumulative_share": 0.9987292569141777, "has_sbti_target": false, "renewable_electricity_share": 0.4}, {"supplier_id": "S044", "supplier_name": "Orbis Consulting", "country": "US", "category": "Professional & IT services", "ghg_category": "Cat 1 Purchased goods", "spend_usd": 273000, "tco2e": 32.76, "spend_based_tco2e": 32.76, "method": "Spend-based", "dq_score": 4, "intensity_kgco2e_per_usd": 0.11999999999999998, "share": 0.0007051074439623737, "cumulative_share": 0.99943436435814, "has_sbti_target": false, "renewable_electricity_share": 0.4}, {"supplier_id": "S046", "supplier_name": "Alta Consulting", "country": "US", "category": "Professional & IT services", "ghg_category": "Cat 1 Purchased goods", "spend_usd": 219000, "tco2e": 26.28, "spend_based_tco2e": 26.28, "method": "Spend-based", "dq_score": 4, "intensity_kgco2e_per_usd": 0.12, "share": 0.0005656356418599261, "cumulative_share": 1.0, "has_sbti_target": true, "renewable_electricity_share": 0.8}], "scenarios": [{"year": 2025, "bau": 46461.00432, "renewable_electricity": 46461.00432, "low_carbon_materials": 46461.00432, "supplier_targets": 46461.00432, "combined": 46461.00432, "target_1p5c": 46461.00432}, {"year": 2026, "bau": 47390.224406400004, "renewable_electricity": 45660.8373739032, "low_carbon_materials": 45839.858494800006, "supplier_targets": 46490.216830632, "combined": 43959.95206788841, "target_1p5c": 44509.64213856}, {"year": 2027, "bau": 48338.028894528004, "renewable_electricity": 44810.07934823453, "low_carbon_materials": 45175.282434864006, "supplier_targets": 46540.569764507185, "combined": 41545.36488638785, "target_1p5c": 42558.27995712}, {"year": 2028, "bau": 49304.78947241857, "renewable_electricity": 43907.026666589554, "low_carbon_materials": 44465.787389132645, "supplier_targets": 45771.197708627864, "combined": 39142.75088626792, "target_1p5c": 40606.91777568}, {"year": 2029, "bau": 50290.88526186693, "renewable_electricity": 42949.92784593948, "low_carbon_materials": 43709.84242859808, "supplier_targets": 45025.27040165567, "combined": 36781.654851909654, "target_1p5c": 38655.555594239995}, {"year": 2030, "bau": 51296.702967104255, "renewable_electricity": 41936.98226179676, "low_carbon_materials": 42905.873354686475, "supplier_targets": 44302.369811348566, "combined": 34525.42225581182, "target_1p5c": 36704.1934128}], "engagement": [{"supplier_id": "S021", "supplier_name": "Alta Metals", "category": "Aluminium", "tco2e": 6982.416, "share": 0.1502855158254573, "dq_score": 3, "has_sbti_target": false, "recommended_actions": "Request product carbon footprint (PACT format); Ask to set a science-based target; Renewable power plan (now 0%)"}, {"supplier_id": "S020", "supplier_name": "Quarz Metals", "category": "Aluminium", "tco2e": 6393.688, "share": 0.13761407213592494, "dq_score": 3, "has_sbti_target": true, "recommended_actions": "Request product carbon footprint (PACT format); Renewable power plan (now 80%)"}, {"supplier_id": "S005", "supplier_name": "Kestrel Gases", "category": "Industrial gases & precursors", "tco2e": 3626.7, "share": 0.07805900998224483, "dq_score": 4, "has_sbti_target": true, "recommended_actions": "Request product carbon footprint (PACT format); Renewable power plan (now 60%)"}, {"supplier_id": "S042", "supplier_name": "Alta Logistics", "category": "Freight & logistics", "tco2e": 1812.02, "share": 0.03900087883420941, "dq_score": 4, "has_sbti_target": false, "recommended_actions": "Request product carbon footprint (PACT format); Ask to set a science-based target; Renewable power plan (now 0%)"}, {"supplier_id": "S003", "supplier_name": "Brava Gases", "category": "Industrial gases & precursors", "tco2e": 1367.1, "share": 0.02942467602689136, "dq_score": 4, "has_sbti_target": false, "recommended_actions": "Request product carbon footprint (PACT format); Ask to set a science-based target; Renewable power plan (now 40%)"}, {"supplier_id": "S004", "supplier_name": "Velo Gases", "category": "Industrial gases & precursors", "tco2e": 1333.5, "share": 0.02870148890487867, "dq_score": 4, "has_sbti_target": false, "recommended_actions": "Request product carbon footprint (PACT format); Ask to set a science-based target"}, {"supplier_id": "S002", "supplier_name": "Rhein Gases", "category": "Industrial gases & precursors", "tco2e": 1008.0, "share": 0.02169561366038073, "dq_score": 4, "has_sbti_target": false, "recommended_actions": "Request product carbon footprint (PACT format); Ask to set a science-based target; Renewable power plan (now 0%)"}, {"supplier_id": "S036", "supplier_name": "Helix Maschinenbau", "category": "Machinery & equipment", "tco2e": 982.68, "share": 0.021150640507721162, "dq_score": 4, "has_sbti_target": false, "recommended_actions": "Request product carbon footprint (PACT format); Ask to set a science-based target; Renewable power plan (now 0%)"}, {"supplier_id": "S011", "supplier_name": "Kestrel Polymers", "category": "Plastics & resins", "tco2e": 1257.9735, "share": 0.027075899852179522, "dq_score": 3, "has_sbti_target": false, "recommended_actions": "Request product carbon footprint (PACT format); Ask to set a science-based target; Renewable power plan (now 60%)"}, {"supplier_id": "S008", "supplier_name": "Brava Polymers", "category": "Plastics & resins", "tco2e": 2367.6786, "share": 0.05096055573169754, "dq_score": 3, "has_sbti_target": true, "recommended_actions": "Request product carbon footprint (PACT format); Renewable power plan (now 80%)"}, {"supplier_id": "S024", "supplier_name": "Ferro Pack", "category": "Packaging & reels", "tco2e": 1036.3653, "share": 0.022306132103000566, "dq_score": 3, "has_sbti_target": false, "recommended_actions": "Request product carbon footprint (PACT format); Ask to set a science-based target; Renewable power plan (now 40%)"}, {"supplier_id": "S016", "supplier_name": "Lumen Wire", "category": "Steel wire & products", "tco2e": 1013.314, "share": 0.021809989147475235, "dq_score": 3, "has_sbti_target": false, "recommended_actions": "Request product carbon footprint (PACT format); Ask to set a science-based target; Renewable power plan (now 0%)"}]};
+const $ = s => document.querySelector(s);
+const fmt = (v, d = 0) => v.toLocaleString("en-US", { maximumFractionDigits: d, minimumFractionDigits: d });
+const pct = (v, d = 0) => (v * 100).toFixed(d) + "%";
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const NS = "http://www.w3.org/2000/svg";
+function el(tag, attrs = {}, parent) { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; }
+const tip = $("#tip");
+function showTip(ev, html) { tip.innerHTML = html; tip.hidden = false; const w = tip.offsetWidth, h = tip.offsetHeight;
+  let x = ev.clientX + 14, y = ev.clientY + 14; if (x + w > innerWidth - 8) x = ev.clientX - w - 14; if (y + h > innerHeight - 8) y = ev.clientY - h - 14;
+  tip.style.left = x + "px"; tip.style.top = y + "px"; }
+function hideTip() { tip.hidden = true; }
+function niceMax(v) { const p = Math.pow(10, Math.floor(Math.log10(v))); for (const m of [1, 2, 2.5, 5, 10]) if (m * p >= v) return m * p; }
+
+const S = DATA.summary, C = DATA.config, SUP = DATA.suppliers;
+$("#by").textContent = C.base_year; $("#ty").textContent = C.target_year;
+
+// ---- KPIs
+const diff = S.total_tco2e / S.spend_based_total_tco2e - 1;
+$("#kpis").innerHTML = [
+  ["Upstream footprint", `${fmt(S.total_tco2e)} <small>tCO₂e</small>`, `± ${fmt(S.uncertainty_tco2e)} t (1σ) on ${"$" + fmt(S.total_spend_usd / 1e6, 1)}M spend`],
+  ["vs spend-based only", `${diff >= 0 ? "+" : ""}${pct(diff)}`, `Spend factors alone give ${fmt(S.spend_based_total_tco2e)} t`],
+  ["Suppliers for 80%", `${S.suppliers_for_80pct} <small>of ${S.n_suppliers}</small>`, "A short list carries most of the footprint"],
+  ["Primary data", pct(S.primary_data_coverage), `Weighted data quality ${S.weighted_dq_score.toFixed(1)} of 4`],
+  ["Under SBTi targets", pct(S.sbti_coverage), "Share of footprint at suppliers with a target"],
+].map(([l, v, n]) => `<div class="kpi"><div class="eyebrow">${l}</div><div class="v">${v}</div><div class="n">${n}</div></div>`).join("");
+
+// ---- Category bars (horizontal, single series)
+(function () {
+  const cats = DATA.categories, W = 640, rowH = 26, L = 200, R = 120, top = 4, H = top + cats.length * rowH + 22;
+  const max = niceMax(cats[0].tco2e), x = v => L + (W - L - R) * v / max;
+  const svg = el("svg", { viewBox: `0 0 ${W} ${H}`, width: "100%", role: "img", "aria-label": "Emissions by category" });
+  for (let i = 0; i <= 4; i++) { const v = max * i / 4, xx = x(v);
+    el("line", { x1: xx, x2: xx, y1: top, y2: H - 20, stroke: "var(--line)" }, svg);
+    el("text", { x: xx, y: H - 6, "text-anchor": "middle", class: "tick" }, svg).textContent = fmt(v / 1000, v && v < 10000 ? 1 : 0) + "k"; }
+  cats.forEach((c, i) => {
+    const y = top + i * rowH + 5, w = Math.max(2, x(c.tco2e) - L);
+    el("text", { x: L - 10, y: y + 12, "text-anchor": "end" }, svg).textContent = c.category;
+    el("path", { d: `M${L},${y} h${w - 4} a4,4 0 0 1 4,4 v8 a4,4 0 0 1 -4,4 h${-(w - 4)} z`, fill: "var(--s1)" }, svg);
+    const t = el("text", { x: L + w + 8, y: y + 12, class: "num" }, svg);
+    t.innerHTML = `<tspan fill="var(--ink)">${fmt(c.tco2e)}</tspan><tspan fill="var(--muted)" dx="6">${c.intensity_kgco2e_per_usd.toFixed(2)} kg/$</tspan>`;
+    const hit = el("rect", { x: 0, y: y - 4, width: W, height: rowH, fill: "transparent" }, svg);
+    hit.addEventListener("mousemove", e => showTip(e, `<b>${esc(c.category)}</b><div>${esc(c.ghg_category)}</div>
+      <div class="row"><span>Emissions</span><span class="num">${fmt(c.tco2e)} t (${pct(c.share, 1)})</span></div>
+      <div class="row"><span>Spend</span><span class="num">$${fmt(c.spend_usd / 1e6, 2)}M</span></div>
+      <div class="row"><span>Suppliers</span><span class="num">${c.suppliers}</span></div>`));
+    hit.addEventListener("mouseleave", hideTip);
+  });
+  $("#cat").appendChild(svg);
+})();
+
+// ---- Data quality: one segmented bar + legend rows
+(function () {
+  const methods = [["Supplier-specific", "var(--q1)", "DQ 1–2"], ["Average-data", "var(--q3)", "DQ 3"], ["Spend-based", "var(--q4)", "DQ 4"]];
+  const tot = S.total_tco2e, vals = methods.map(([m]) => SUP.filter(s => s.method === m).reduce((a, s) => a + s.tco2e, 0));
+  const counts = methods.map(([m]) => SUP.filter(s => s.method === m).length);
+  const W = 420, svg = el("svg", { viewBox: `0 0 ${W} 34`, width: "100%", role: "img", "aria-label": "Footprint by data method" });
+  let x0 = 0;
+  vals.forEach((v, i) => { const w = W * v / tot; if (w <= 0) return;
+    const r = el("rect", { x: x0 + (i ? 1 : 0), y: 4, width: Math.max(0, w - (i ? 2 : 0) - (i < 2 ? 1 : 0)), height: 26, rx: 4, fill: methods[i][1], class: "m" }, svg);
+    r.addEventListener("mousemove", e => showTip(e, `<b>${methods[i][0]}</b> · ${methods[i][2]}<div class="row"><span>Emissions</span><span class="num">${fmt(v)} t (${pct(v / tot)})</span></div><div class="row"><span>Suppliers</span><span class="num">${counts[i]}</span></div>`));
+    r.addEventListener("mouseleave", hideTip); x0 += w; });
+  $("#dq").appendChild(svg);
+  const lg = document.createElement("div"); lg.style.cssText = "display:grid;gap:6px;margin-top:12px;font-size:13.5px";
+  lg.innerHTML = methods.map(([m, c, d], i) => `<div style="display:flex;gap:10px;align-items:center"><i style="width:10px;height:10px;border-radius:2px;background:${c};flex:none"></i><span style="flex:1">${m} <span style="color:var(--muted)">· ${d}</span></span><span class="num">${pct(vals[i] / tot)}</span><span class="num" style="color:var(--muted);width:7ch;text-align:right">${counts[i]} sup.</span></div>`).join("");
+  $("#dq").appendChild(lg);
+  const spendTop = SUP.slice(0, S.suppliers_for_80pct).filter(s => s.dq_score >= 4).length;
+  $("#dqnote").innerHTML = `${spendTop} of the ${S.suppliers_for_80pct} largest suppliers are still estimated from spend. Asking them for product carbon footprints would change the estimate the most.`;
+})();
+
+// ---- Scenario model (JS port of scope3/scenarios.py so the sliders recompute live)
+const RATE = 0.042;
+const MAT = { "Aluminium": [0.5, 1 - 1.5 / 14], "Steel wire & products": [0.5, 1 - 0.7 / 2] };
+function engagedFlags(cov) { return SUP.map(s => (s.cumulative_share - s.share) < cov - 1e-12); }
+function scenarios(cov, growth) {
+  const eng = engagedFlags(cov), out = [], base = S.total_tco2e, span = C.target_year - C.base_year;
+  for (let year = C.base_year; year <= C.target_year; year++) {
+    const t = year - C.base_year, g = Math.pow(1 + growth, t), ramp = Math.min(1, Math.max(0, t / span));
+    const r = { year, bau: 0, renewable_electricity: 0, low_carbon_materials: 0, supplier_targets: 0, combined: 0, target_1p5c: base * Math.max(0, 1 - RATE * t) };
+    SUP.forEach((s, i) => {
+      const b = s.tco2e * g, reCut = s.reducible * (1 - s.renewable_electricity_share);
+      const fRe = 1 - reCut * ramp * (eng[i] ? 1 : 0);
+      const [ms, mc] = MAT[s.category] || [0, 0], fMat = 1 - ms * mc * ramp;
+      const yrs = s.has_sbti_target ? t : (eng[i] ? Math.max(0, year - 2027) : 0), fT = Math.pow(1 - RATE, yrs);
+      r.bau += b; r.renewable_electricity += b * fRe; r.low_carbon_materials += b * fMat; r.supplier_targets += b * fT; r.combined += b * Math.min(fRe * fMat, fT);
+    });
+    out.push(r);
+  }
+  return { rows: out, engaged: eng };
+}
+// reducible share per category comes from the factors table, embedded per supplier
+SUP.forEach(s => { s.reducible = DATA.reducible[s.category] ?? 0; });
+
+const SERIES = [
+  ["combined", "Combined", "var(--s1)", 2.5], ["renewable_electricity", "Renewable power", "var(--s2)", 1.5],
+  ["low_carbon_materials", "Low-carbon materials", "var(--s3)", 1.5], ["supplier_targets", "Supplier targets", "var(--s4)", 1.5],
+  ["bau", "Business as usual", "var(--bau)", 2],
+];
+$("#scenlegend").innerHTML = SERIES.map(([, n, c]) => `<span><i style="background:${c}"></i>${n}</span>`).join("") + `<span><i class="dash"></i>1.5 °C linear path</span>`;
+
+function drawScen(rows) {
+  const box = $("#scen"); box.innerHTML = "";
+  const W = 900, H = 300, L = 56, R = 150, T = 12, B = 28;
+  const all = rows.flatMap(r => [r.bau, r.target_1p5c, r.combined]);
+  const lo = Math.floor(Math.min(...all) * 0.85 / 5000) * 5000, hi = Math.ceil(Math.max(...all) * 1.03 / 5000) * 5000;
+  const x = yr => L + (W - L - R) * (yr - C.base_year) / (C.target_year - C.base_year), y = v => T + (H - T - B) * (1 - (v - lo) / (hi - lo));
+  const svg = el("svg", { viewBox: `0 0 ${W} ${H}`, width: "100%", role: "img", "aria-label": "Emission pathways to target year" });
+  for (let v = lo; v <= hi; v += 5000) { el("line", { x1: L, x2: W - R, y1: y(v), y2: y(v), stroke: "var(--line)" }, svg);
+    el("text", { x: L - 8, y: y(v) + 4, "text-anchor": "end", class: "tick" }, svg).textContent = fmt(v / 1000) + "k"; }
+  rows.forEach(r => el("text", { x: x(r.year), y: H - 8, "text-anchor": "middle", class: "tick" }, svg).textContent = r.year);
+  const line = (k, c, w, dash) => el("path", { d: rows.map((r, i) => (i ? "L" : "M") + x(r.year) + "," + y(r[k])).join(""), fill: "none", stroke: c, "stroke-width": w, "stroke-linejoin": "round", "stroke-linecap": "round", ...(dash ? { "stroke-dasharray": "5 4" } : {}) }, svg);
+  line("target_1p5c", "var(--ink)", 1.5, true);
+  [...SERIES].reverse().forEach(([k, , c, w]) => line(k, c, w));
+  const last = rows[rows.length - 1];
+  const endLabels = [["Combined", last.combined, "var(--s1)"], ["1.5 °C path", last.target_1p5c, "var(--ink)"], ["BAU", last.bau, "var(--bau)"]].sort((a, b) => b[1] - a[1]);
+  let prevY = -99; endLabels.forEach(([n, v, c]) => { let ly = Math.max(y(v) + 4, prevY + 15); prevY = ly;
+    el("circle", { cx: x(last.year), cy: y(v), r: 4, fill: c, stroke: "var(--surface)", "stroke-width": 2 }, svg);
+    const t = el("text", { x: x(last.year) + 10, y: ly }, svg); t.innerHTML = `<tspan fill="var(--ink)">${n}</tspan><tspan class="tick" dx="6">${fmt(v / 1000, 1)}k</tspan>`; });
+  const cross = el("line", { y1: T, y2: H - B, stroke: "var(--axis)", opacity: 0 }, svg);
+  const hit = el("rect", { x: L, y: T, width: W - L - R, height: H - T - B, fill: "transparent" }, svg);
+  hit.addEventListener("mousemove", e => { const pt = svg.getBoundingClientRect(), sx = (e.clientX - pt.left) * W / pt.width;
+    const yr = Math.round(C.base_year + (sx - L) / (W - L - R) * (C.target_year - C.base_year)), r = rows.find(q => q.year === yr); if (!r) return;
+    cross.setAttribute("x1", x(yr)); cross.setAttribute("x2", x(yr)); cross.setAttribute("opacity", 1);
+    showTip(e, `<b>${yr}</b>` + SERIES.map(([k, n, c]) => `<div class="row"><span><i style="display:inline-block;width:8px;height:8px;border-radius:2px;background:${c};margin-right:6px"></i>${n}</span><span class="num">${fmt(r[k])}</span></div>`).join("") + `<div class="row"><span>1.5 °C path</span><span class="num">${fmt(r.target_1p5c)}</span></div>`); });
+  hit.addEventListener("mouseleave", () => { cross.setAttribute("opacity", 0); hideTip(); });
+  box.appendChild(svg);
+  const gap = last.combined - last.target_1p5c;
+  $("#verdict").innerHTML = gap <= 0
+    ? `<span class="pill ok">✓ On track</span><span>Combined pathway reaches ${fmt(last.combined)} t in ${last.year}, ${fmt(-gap)} t below the 1.5 °C path (${pct(1 - last.combined / S.total_tco2e)} below the base year).</span>`
+    : `<span class="pill gap">! Gap ${fmt(gap)} t</span><span>Combined pathway reaches ${fmt(last.combined)} t in ${last.year}. Widen engagement or add levers to close the gap to ${fmt(last.target_1p5c)} t.</span>`;
+}
+
+// ---- Pareto (supplier concentration)
+function drawPareto(engaged) {
+  const box = $("#pareto"); box.innerHTML = "";
+  const n = SUP.length, W = 900, H = 220, L = 48, R = 40, T = 10, B = 22, bw = (W - L - R) / n;
+  const max = niceMax(SUP[0].tco2e), y = v => T + (H - T - B) * (1 - v / max), yc = c => T + (H - T - B) * (1 - c);
+  const svg = el("svg", { viewBox: `0 0 ${W} ${H}`, width: "100%", role: "img", "aria-label": "Supplier Pareto chart" });
+  [0, .25, .5, .75, 1].forEach(f => { el("line", { x1: L, x2: W - R, y1: yc(f), y2: yc(f), stroke: "var(--line)" }, svg);
+    el("text", { x: W - R + 6, y: yc(f) + 4, class: "tick" }, svg).textContent = pct(f);
+    el("text", { x: L - 6, y: yc(f) + 4, "text-anchor": "end", class: "tick" }, svg).textContent = fmt(max * f / 1000, 1) + "k"; });
+  const y80 = yc(0.8); el("line", { x1: L, x2: W - R, y1: y80, y2: y80, stroke: "var(--axis)", "stroke-dasharray": "3 3" }, svg);
+  SUP.forEach((s, i) => { const h = H - B - y(s.tco2e), bx = L + i * bw + 1;
+    el("rect", { x: bx, y: y(s.tco2e), width: Math.max(1, bw - 2), height: Math.max(1, h), rx: Math.min(3, (bw - 2) / 2), fill: engaged[i] ? "var(--s1)" : "var(--bau)" }, svg);
+    const hit = el("rect", { x: L + i * bw, y: T, width: bw, height: H - T - B, fill: "transparent" }, svg);
+    hit.addEventListener("mousemove", e => showTip(e, `<b>${esc(s.supplier_name)}</b> <span style="color:var(--muted)">${s.supplier_id} · ${s.country}</span><div>${esc(s.category)}</div>
+      <div class="row"><span>Emissions</span><span class="num">${fmt(s.tco2e)} t (${pct(s.share, 1)})</span></div>
+      <div class="row"><span>Cumulative</span><span class="num">${pct(s.cumulative_share, 1)}</span></div>
+      <div class="row"><span>Method</span><span>${s.method} (DQ ${s.dq_score})</span></div>`));
+    hit.addEventListener("mouseleave", hideTip); });
+  el("path", { d: SUP.map((s, i) => (i ? "L" : "M") + (L + (i + .5) * bw) + "," + yc(s.cumulative_share)).join(""), fill: "none", stroke: "var(--ink)", "stroke-width": 2, "stroke-linejoin": "round", "pointer-events": "none" }, svg);
+  el("text", { x: L + 6, y: y80 - 6, class: "tick" }, svg).textContent = "80% of footprint";
+  box.appendChild(svg);
+}
+
+// ---- Controls
+const cov = $("#cov"), gro = $("#gro");
+cov.value = C.engagement_coverage; gro.value = C.business_growth;
+function update() {
+  const c = +cov.value, g = +gro.value; $("#covo").textContent = pct(c); $("#groo").textContent = pct(g, 1);
+  const { rows, engaged } = scenarios(c, g); drawScen(rows); drawPareto(engaged);
+}
+cov.addEventListener("input", update); gro.addEventListener("input", update); update();
+
+// ---- Engagement table
+(function () {
+  const rows = DATA.engagement;
+  $("#eng").innerHTML = `<thead><tr><th>#</th><th>Supplier</th><th>Category</th><th class="r">tCO₂e</th><th class="r">Share</th><th>DQ</th><th>SBTi</th><th>Next actions</th></tr></thead><tbody>` +
+    rows.map((r, i) => `<tr><td class="num">${i + 1}</td><td><b>${esc(r.supplier_name)}</b><div class="num" style="color:var(--muted);font-size:12px">${r.supplier_id}</div></td><td>${esc(r.category)}</td>
+      <td class="r num">${fmt(r.tco2e)}</td><td class="r num">${pct(r.share, 1)}</td><td><span class="dq dq${r.dq_score}">${r.dq_score}</span></td>
+      <td class="${r.has_sbti_target ? "yes" : "no"}">${r.has_sbti_target ? "✓ Yes" : "– No"}</td>
+      <td><ol class="actions">${r.recommended_actions.split("; ").map(a => `<li>${esc(a)}</li>`).join("")}</ol></td></tr>`).join("") + "</tbody>";
+})();
+
+// ---- Supplier table with filters and sorting
+(function () {
+  const cats = [...new Set(SUP.map(s => s.category))].sort(), mets = [...new Set(SUP.map(s => s.method))];
+  cats.forEach(c => $("#fcat").insertAdjacentHTML("beforeend", `<option>${esc(c)}</option>`));
+  mets.forEach(m => $("#fmet").insertAdjacentHTML("beforeend", `<option>${esc(m)}</option>`));
+  const cols = [["supplier_name", "Supplier"], ["category", "Category"], ["country", "Ctry"], ["spend_usd", "Spend $k", 1], ["tco2e", "tCO₂e", 1], ["share", "Share", 1], ["intensity_kgco2e_per_usd", "kg/$", 1], ["method", "Method"], ["dq_score", "DQ"], ["renewable_electricity_share", "RE share", 1]];
+  let key = "tco2e", dir = -1;
+  const maxT = SUP[0].tco2e;
+  function render() {
+    const fc = $("#fcat").value, fm = $("#fmet").value;
+    const rows = SUP.filter(s => (!fc || s.category === fc) && (!fm || s.method === fm))
+      .sort((a, b) => (a[key] > b[key] ? 1 : a[key] < b[key] ? -1 : 0) * dir);
+    $("#sup").innerHTML = `<thead><tr>${cols.map(([k, n, r]) => `<th data-k="${k}" class="${r ? "r" : ""}" aria-sort="${k === key ? (dir > 0 ? "ascending" : "descending") : "none"}">${n}${k === key ? (dir > 0 ? " ↑" : " ↓") : ""}</th>`).join("")}</tr></thead><tbody>` +
+      rows.map(s => `<tr><td><b>${esc(s.supplier_name)}</b></td><td>${esc(s.category)}</td><td class="num">${s.country}</td>
+        <td class="r num">${fmt(s.spend_usd / 1000)}</td>
+        <td class="r num"><div>${fmt(s.tco2e)}</div><div class="bar-in" style="width:${(s.tco2e / maxT * 100).toFixed(1)}%;margin-left:auto"></div></td>
+        <td class="r num">${pct(s.share, 1)}</td><td class="r num">${s.intensity_kgco2e_per_usd.toFixed(2)}</td><td>${s.method}</td>
+        <td><span class="dq dq${s.dq_score}">${s.dq_score}</span></td><td class="r num">${pct(s.renewable_electricity_share)}</td></tr>`).join("") + "</tbody>";
+    $("#sup").querySelectorAll("th").forEach(th => th.addEventListener("click", () => { const k = th.dataset.k; if (k === key) dir = -dir; else { key = k; dir = typeof SUP[0][k] === "string" ? 1 : -1; } render(); }));
+  }
+  $("#fcat").addEventListener("change", render); $("#fmet").addEventListener("change", render); render();
+})();
+</script>

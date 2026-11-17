@@ -1,0 +1,13 @@
+category,ghg_category,spend_factor_kgco2e_per_usd,activity_factor_kgco2e_per_kg,renewable_electricity_reducible_share,source_note
+Industrial gases & precursors,Cat 1 Purchased goods,1.05,,0.55,Illustrative; electricity-intensive air separation / chlorination. Replace with USEEIO v1.3 or EXIOBASE.
+Plastics & resins,Cat 1 Purchased goods,0.92,2.10,0.20,Illustrative; avg. of HDPE/PVC/acrylate coatings cradle-to-gate.
+Aramid & synthetic yarns,Cat 1 Purchased goods,0.85,22.0,0.35,Illustrative; para-aramid strength members.
+Steel wire & products,Cat 1 Purchased goods,0.95,2.00,0.15,Illustrative; BF-BOF world average. EAF route approx. 0.7 kgCO2e/kg.
+Aluminium,Cat 1 Purchased goods,1.25,14.0,0.60,Illustrative; primary aluminium global avg. Recycled approx. 1.5 kgCO2e/kg.
+Copper,Cat 1 Purchased goods,0.62,4.00,0.40,Illustrative; refined copper cradle-to-gate.
+Packaging & reels,Cat 1 Purchased goods,0.58,0.90,0.25,Illustrative; corrugated board and wooden/plastic cable reels.
+Electronic components,Cat 1 Purchased goods,0.32,,0.45,Illustrative; spend-based only.
+Other chemicals,Cat 1 Purchased goods,0.78,,0.30,"Illustrative; gels, inks, solvents."
+Machinery & equipment,Cat 2 Capital goods,0.38,,0.30,Illustrative; spend-based only.
+Freight & logistics,Cat 4 Upstream transport,0.86,,0.05,Illustrative; road/sea mix. Prefer tonne-km (GLEC) when available.
+Professional & IT services,Cat 1 Purchased goods,0.12,,0.50,Illustrative; spend-based only.

@@ -1,0 +1,47 @@
+supplier_id,supplier_name,country,category,spend_usd,quantity_kg,supplier_pcf_kgco2e_per_kg,pcf_third_party_verified,has_sbti_target,renewable_electricity_share
+S001,Arcon Gases,CN,Industrial gases & precursors,843000,,,,yes,0.6
+S002,Rhein Gases,PL,Industrial gases & precursors,960000,,,,no,0
+S003,Brava Gases,US,Industrial gases & precursors,1302000,,,,no,0.4
+S004,Velo Gases,DE,Industrial gases & precursors,1270000,,,,no,1.0
+S005,Kestrel Gases,US,Industrial gases & precursors,3454000,,,,yes,0.6
+S006,Meridian Polymers,DE,Plastics & resins,633000,252559,,,no,0.1
+S007,Cobalt Polymers,IT,Plastics & resins,1719000,578977,1.88,no,no,0.4
+S008,Brava Polymers,US,Plastics & resins,2532000,1127466,,,yes,0.8
+S009,Arcon Polymers,US,Plastics & resins,1200000,468081,,,no,0
+S010,Tessel Polymers,US,Plastics & resins,2516000,917188,,,yes,0.6
+S011,Kestrel Polymers,IN,Plastics & resins,1450000,599035,,,no,0.6
+S012,Vista Polymers,KR,Plastics & resins,847000,378964,2.21,no,yes,0.8
+S013,Meridian Fibres,FR,Aramid & synthetic yarns,873000,31186,,,no,0.6
+S014,Lumen Fibres,NL,Aramid & synthetic yarns,927000,32509,,,yes,1.0
+S015,Polar Fibres,PL,Aramid & synthetic yarns,883000,27440,,,no,0
+S016,Lumen Wire,CZ,Steel wire & products,1047000,506657,,,no,0
+S017,Cobalt Wire,PL,Steel wire & products,861000,397046,,,no,0
+S018,Rhein Wire,JP,Steel wire & products,1339000,652184,,,yes,0.8
+S019,Nord Wire,PL,Steel wire & products,2007000,949279,,,yes,0.6
+S020,Quarz Metals,TR,Aluminium,1419000,456692,,,yes,0.8
+S021,Alta Metals,FR,Aluminium,1592000,498744,,,no,0
+S022,Orbis Cuprum,KR,Copper,220000,20799,,,no,0
+S023,Ferro Cuprum,CN,Copper,744000,68494,,,no,0
+S024,Ferro Pack,US,Packaging & reels,1243000,1151517,,,no,0.4
+S025,Rhein Pack,IN,Packaging & reels,810000,638624,,,no,0.25
+S026,Polar Pack,CZ,Packaging & reels,399000,330756,0.51,no,yes,0.6
+S027,Orbis Pack,IT,Packaging & reels,152000,119232,,,yes,0.4
+S028,Helix Pack,JP,Packaging & reels,473000,422226,0.96,no,no,0.4
+S029,Orbis Electronics,PL,Electronic components,561000,,,,no,0
+S030,Arcon Electronics,JP,Electronic components,425000,,,,no,0.25
+S031,Vista Electronics,DE,Electronic components,439000,,,,no,0
+S032,Sintra Chemie,US,Other chemicals,573000,,,,no,0
+S033,Brava Chemie,CN,Other chemicals,158000,,,,no,0.25
+S034,Tessel Chemie,JP,Other chemicals,303000,,,,no,0
+S035,Rhein Chemie,DE,Other chemicals,126000,,,,no,0.4
+S036,Helix Maschinenbau,NL,Machinery & equipment,2586000,,,,no,0
+S037,Ferro Maschinenbau,CN,Machinery & equipment,1055000,,,,no,0
+S038,Sintra Maschinenbau,JP,Machinery & equipment,402000,,,,no,1.0
+S039,Quarz Logistics,TR,Freight & logistics,736000,,,,no,1.0
+S040,Ferro Logistics,CZ,Freight & logistics,417000,,,,yes,0.4
+S041,Rhein Logistics,CZ,Freight & logistics,341000,,,,yes,0.4
+S042,Alta Logistics,TR,Freight & logistics,2107000,,,,no,0
+S043,Helix Consulting,IN,Professional & IT services,829000,,,,yes,0.4
+S044,Orbis Consulting,US,Professional & IT services,273000,,,,no,0.4
+S045,Vista Consulting,CZ,Professional & IT services,466000,,,,no,0.4
+S046,Alta Consulting,US,Professional & IT services,219000,,,,yes,0.8

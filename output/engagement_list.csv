@@ -1,0 +1,13 @@
+supplier_id,supplier_name,category,tco2e,dq_score,has_sbti_target,priority_score,recommended_actions
+S021,Alta Metals,Aluminium,6982.416,3,False,0.1502855158254573,Request product carbon footprint (PACT format); Ask to set a science-based target; Renewable power plan (now 0%)
+S020,Quarz Metals,Aluminium,6393.688,3,True,0.06880703606796247,Request product carbon footprint (PACT format); Renewable power plan (now 80%)
+S005,Kestrel Gases,Industrial gases & precursors,3626.7,4,True,0.052039339988163215,Request product carbon footprint (PACT format); Renewable power plan (now 60%)
+S042,Alta Logistics,Freight & logistics,1812.02,4,False,0.05200117177894588,Request product carbon footprint (PACT format); Ask to set a science-based target; Renewable power plan (now 0%)
+S003,Brava Gases,Industrial gases & precursors,1367.1,4,False,0.03923290136918848,Request product carbon footprint (PACT format); Ask to set a science-based target; Renewable power plan (now 40%)
+S004,Velo Gases,Industrial gases & precursors,1333.5,4,False,0.03826865187317156,Request product carbon footprint (PACT format); Ask to set a science-based target
+S002,Rhein Gases,Industrial gases & precursors,1008.0,4,False,0.028927484880507635,Request product carbon footprint (PACT format); Ask to set a science-based target; Renewable power plan (now 0%)
+S036,Helix Maschinenbau,Machinery & equipment,982.68,4,False,0.02820085401029488,Request product carbon footprint (PACT format); Ask to set a science-based target; Renewable power plan (now 0%)
+S011,Kestrel Polymers,Plastics & resins,1257.9735,3,False,0.027075899852179522,Request product carbon footprint (PACT format); Ask to set a science-based target; Renewable power plan (now 60%)
+S008,Brava Polymers,Plastics & resins,2367.6786,3,True,0.02548027786584877,Request product carbon footprint (PACT format); Renewable power plan (now 80%)
+S024,Ferro Pack,Packaging & reels,1036.3653,3,False,0.022306132103000566,Request product carbon footprint (PACT format); Ask to set a science-based target; Renewable power plan (now 40%)
+S016,Lumen Wire,Steel wire & products,1013.314,3,False,0.021809989147475235,Request product carbon footprint (PACT format); Ask to set a science-based target; Renewable power plan (now 0%)
