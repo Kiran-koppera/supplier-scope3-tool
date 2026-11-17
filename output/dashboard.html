@@ -8,52 +8,97 @@
 <title>Supplier Carbon Hotspots</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
-/* Layout: one reading column of panels: KPIs, then where (categories), who (suppliers), how good (data quality), what next (scenarios, engagement). */
+/* Layout: frosted-glass panels floating over a cool, light-through-glass field.
+   One reading column: KPIs, where (categories), how good (data), who (suppliers), what next (scenarios, engagement). */
 :root {
-  --bg: #f4f6f5; --surface: #fcfcfb; --ink: #0f1a1a; --ink-2: #4c5654; --muted: #7d8582;
-  --line: #e1e3df; --axis: #c3c6c0; --ring: rgba(11,11,11,.10);
-  --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s4: #eda100; --bau: #a3a8a4;
+  --bg: #eaf1f7; --streak: rgba(255,255,255,.55); --dq-ink: #0b0b0b;
+  --glow-1: rgba(64,156,255,.28); --glow-2: rgba(0,190,214,.20); --glow-3: rgba(120,98,255,.12);
+  --glass: rgba(255,255,255,.62); --glass-strong: rgba(255,255,255,.80);
+  --glass-edge: rgba(255,255,255,.85); --glass-shadow: 0 1px 2px rgba(16,42,77,.06), 0 12px 32px rgba(16,42,77,.08);
+  --surface: #f9fbfd; --ink: #0b1f33; --ink-2: #3f5468; --muted: #6c7f92;
+  --line: rgba(11,31,51,.09); --axis: rgba(11,31,51,.22); --ring: rgba(11,31,51,.10);
+  --brand: #0a5bd3; --brand-deep: #07306e; --beam: linear-gradient(90deg, #0a5bd3, #22b8e6 55%, rgba(34,184,230,0));
+  --hero-1: #062a5f; --hero-2: #0b4fb5; --hero-ink: #ffffff; --hero-ink-2: rgba(232,242,255,.82);
+  --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s4: #eda100; --bau: #9aa8b5;
   --q1: #1c5cab; --q2: #3987e5; --q3: #6da7ec; --q4: #9ec5f4;
   --good: #0ca30c; --warn: #fab219; --serious: #ec835a; --critical: #d03b3b;
   --chip-ink: #0b0b0b;
-  --f-display: "Bricolage Grotesque", "IBM Plex Sans", system-ui, sans-serif;
-  --f-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-display: "Manrope", "Inter", system-ui, sans-serif;
+  --f-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
   --f-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
 }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
-  --bg: #0e1010; --surface: #1a1b1b; --ink: #eef0ee; --ink-2: #bfc4c0; --muted: #8b918d;
-  --line: #2c2e2d; --axis: #3a3d3b; --ring: rgba(255,255,255,.10);
-  --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500; --bau: #6b706c;
+  --bg: #050d18; --streak: rgba(120,170,255,.06); --dq-ink: #ffffff;
+  --glow-1: rgba(42,120,214,.30); --glow-2: rgba(0,170,200,.16); --glow-3: rgba(110,90,240,.14);
+  --glass: rgba(18,32,52,.58); --glass-strong: rgba(18,32,52,.85);
+  --glass-edge: rgba(160,200,255,.14); --glass-shadow: 0 1px 2px rgba(0,0,0,.3), 0 14px 36px rgba(0,0,0,.35);
+  --surface: #0f1d30; --ink: #eaf2fb; --ink-2: #b3c3d4; --muted: #8295a9;
+  --line: rgba(200,225,255,.09); --axis: rgba(200,225,255,.22); --ring: rgba(200,225,255,.12);
+  --brand: #4d9bff; --brand-deep: #9cc7ff; --beam: linear-gradient(90deg, #4d9bff, #2fd0f0 55%, rgba(47,208,240,0));
+  --hero-1: #0a2a57; --hero-2: #10418f; --hero-ink: #ffffff; --hero-ink-2: rgba(220,235,255,.80);
+  --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500; --bau: #5f7185;
   --q1: #6da7ec; --q2: #3987e5; --q3: #256abf; --q4: #184f95; color-scheme: dark; } }
 :root[data-theme="dark"] {
-  --bg: #0e1010; --surface: #1a1b1b; --ink: #eef0ee; --ink-2: #bfc4c0; --muted: #8b918d;
-  --line: #2c2e2d; --axis: #3a3d3b; --ring: rgba(255,255,255,.10);
-  --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500; --bau: #6b706c;
+  --bg: #050d18; --streak: rgba(120,170,255,.06); --dq-ink: #ffffff;
+  --glow-1: rgba(42,120,214,.30); --glow-2: rgba(0,170,200,.16); --glow-3: rgba(110,90,240,.14);
+  --glass: rgba(18,32,52,.58); --glass-strong: rgba(18,32,52,.85);
+  --glass-edge: rgba(160,200,255,.14); --glass-shadow: 0 1px 2px rgba(0,0,0,.3), 0 14px 36px rgba(0,0,0,.35);
+  --surface: #0f1d30; --ink: #eaf2fb; --ink-2: #b3c3d4; --muted: #8295a9;
+  --line: rgba(200,225,255,.09); --axis: rgba(200,225,255,.22); --ring: rgba(200,225,255,.12);
+  --brand: #4d9bff; --brand-deep: #9cc7ff; --beam: linear-gradient(90deg, #4d9bff, #2fd0f0 55%, rgba(47,208,240,0));
+  --hero-1: #0a2a57; --hero-2: #10418f; --hero-ink: #ffffff; --hero-ink-2: rgba(220,235,255,.80);
+  --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500; --bau: #5f7185;
   --q1: #6da7ec; --q2: #3987e5; --q3: #256abf; --q4: #184f95; color-scheme: dark; }
 
 * { box-sizing: border-box; }
-body { background: var(--bg); color: var(--ink); font: 15px/1.5 var(--f-body);
-  padding-block: 28px 56px; padding-left: max(16px, env(safe-area-inset-left, 0px));
+html { background: var(--bg); }
+body { color: var(--ink); font: 15px/1.55 var(--f-body); min-height: 100vh;
+  background:
+    repeating-linear-gradient(115deg, transparent 0 140px, var(--streak) 140px 141px, transparent 141px 300px),
+    radial-gradient(900px 520px at 8% -8%, var(--glow-1), transparent 70%),
+    radial-gradient(760px 480px at 100% 12%, var(--glow-2), transparent 70%),
+    radial-gradient(700px 600px at 60% 105%, var(--glow-3), transparent 70%),
+    var(--bg);
+  background-attachment: fixed;
+  padding-block: 28px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px));
   padding-right: max(16px, env(safe-area-inset-right, 0px)); }
-.wrap { max-width: 1120px; margin: 0 auto; display: grid; gap: 20px; }
-h1, h2 { font-family: var(--f-display); text-wrap: balance; margin: 0; letter-spacing: -.01em; }
-h1 { font-size: clamp(28px, 4.2vw, 40px); line-height: 1.1; }
-h2 { font-size: 19px; }
-.eyebrow { font: 500 12px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
-.lede { color: var(--ink-2); max-width: 68ch; margin: 8px 0 0; }
-.sample { display: inline-block; margin-top: 10px; font: 500 12px var(--f-mono); color: var(--ink-2);
-  border: 1px dashed var(--axis); border-radius: 4px; padding: 2px 8px; }
+.wrap { max-width: 1160px; margin: 0 auto; display: grid; gap: 20px; position: relative; }
+h1, h2 { font-family: var(--f-display); text-wrap: balance; margin: 0; letter-spacing: -.015em; }
+h1 { font-size: clamp(30px, 4.4vw, 44px); line-height: 1.08; font-weight: 800; }
+h2 { font-size: 18px; font-weight: 700; color: var(--ink); }
+.eyebrow { font: 500 11.5px var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.lede { color: var(--ink-2); max-width: 68ch; margin: 10px 0 0; }
 .num { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
 
-.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(165px, 1fr)); gap: 12px; }
-.kpi { background: var(--surface); border: 1px solid var(--ring); border-radius: 8px; padding: 14px 16px; min-width: 0; }
-.kpi .v { font: 600 26px/1.2 var(--f-mono); font-variant-numeric: tabular-nums; margin-top: 4px; }
-.kpi .v small { font-size: 14px; color: var(--ink-2); font-weight: 400; }
+/* glass surfaces */
+.glass, .kpi, .panel { background: var(--glass); border: 1px solid var(--glass-edge); box-shadow: var(--glass-shadow), inset 0 1px 0 rgba(255,255,255,.35);
+  -webkit-backdrop-filter: blur(18px) saturate(150%); backdrop-filter: blur(18px) saturate(150%); }
+
+/* hero: deep blue glass with a light beam along the bottom edge */
+.hero { position: relative; overflow: hidden; border-radius: 18px; padding: 28px clamp(20px, 3.5vw, 36px) 30px; color: var(--hero-ink);
+  background: linear-gradient(125deg, var(--hero-1) 0%, var(--hero-2) 70%, #1b7fd6 100%); box-shadow: 0 18px 40px rgba(7,48,110,.25); }
+.hero::before { content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(420px 220px at 88% 10%, rgba(255,255,255,.22), transparent 70%),
+              linear-gradient(115deg, transparent 55%, rgba(255,255,255,.10) 55.2%, transparent 62%),
+              linear-gradient(115deg, transparent 66%, rgba(255,255,255,.07) 66.2%, transparent 70%); }
+.hero::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: linear-gradient(90deg, #7fd3ff, #ffffff 40%, rgba(255,255,255,0)); opacity: .85; }
+.hero > * { position: relative; }
+.hero .eyebrow { color: var(--hero-ink-2); }
+.hero h1 { color: var(--hero-ink); margin-top: 6px; }
+.hero .lede { color: var(--hero-ink-2); }
+.sample { display: inline-block; margin-top: 14px; font: 500 11.5px var(--f-mono); color: var(--hero-ink);
+  background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.28); border-radius: 999px; padding: 3px 10px; }
+
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(165px, 1fr)); gap: 14px; }
+.kpi { border-radius: 14px; padding: 16px 18px; min-width: 0; position: relative; overflow: hidden; }
+.kpi::before { content: ""; position: absolute; left: 18px; right: 18px; top: 0; height: 2px; background: var(--beam); border-radius: 0 0 2px 2px; }
+.kpi .v { font: 600 27px/1.2 var(--f-display); font-variant-numeric: tabular-nums; margin-top: 6px; color: var(--ink); }
+.kpi .v small { font: 500 13px var(--f-mono); color: var(--ink-2); }
 .kpi .n { color: var(--ink-2); font-size: 13px; margin-top: 2px; }
 
-.panel { background: var(--surface); border: 1px solid var(--ring); border-radius: 8px; padding: 18px 20px; min-width: 0; }
+.panel { border-radius: 16px; padding: 20px 22px; min-width: 0; }
 .panel header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 6px 16px; margin-bottom: 12px; }
 .panel header p { margin: 2px 0 0; color: var(--ink-2); font-size: 13.5px; max-width: 70ch; }
 .grid2 { display: grid; grid-template-columns: 1.35fr 1fr; gap: 20px; }
@@ -72,7 +117,7 @@ svg .tick { fill: var(--muted); font-size: 11px; font-family: var(--f-mono); }
 .controls { display: flex; flex-wrap: wrap; gap: 10px 22px; align-items: center; margin-bottom: 10px; font-size: 13px; color: var(--ink-2); }
 .controls label { display: flex; align-items: center; gap: 8px; }
 .controls output { font-family: var(--f-mono); color: var(--ink); min-width: 3.5ch; }
-input[type=range] { accent-color: var(--s1); width: 130px; }
+input[type=range] { accent-color: var(--brand); width: 130px; }
 select { font: inherit; font-size: 13px; color: var(--ink); background: var(--surface); border: 1px solid var(--axis); border-radius: 6px; padding: 4px 8px; }
 :focus-visible { outline: 2px solid var(--s1); outline-offset: 2px; }
 
@@ -84,15 +129,16 @@ select { font: inherit; font-size: 13px; color: var(--ink); background: var(--su
 table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
 th { position: sticky; top: 0; background: var(--surface); text-align: left; font: 500 11.5px var(--f-mono); letter-spacing: .05em; text-transform: uppercase; color: var(--muted); padding: 8px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; cursor: pointer; }
 th[data-k]:hover { color: var(--ink); }
+tbody tr:hover td { background: var(--line); }
 td { padding: 7px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
 td.r, th.r { text-align: right; }
 .dq { display: inline-block; min-width: 26px; text-align: center; font: 600 11.5px var(--f-mono); border-radius: 4px; padding: 1px 6px; color: #fff; }
-.dq1 { background: var(--q1); } .dq2 { background: var(--q2); } .dq3 { background: var(--q3); color: var(--chip-ink); } .dq4 { background: var(--q4); color: var(--chip-ink); }
+.dq1 { background: var(--q1); } .dq2 { background: var(--q2); } .dq3 { background: var(--q3); color: var(--dq-ink); } .dq4 { background: var(--q4); color: var(--dq-ink); }
 .bar-in { height: 6px; border-radius: 3px; background: var(--s1); }
 .yes { color: var(--ink); } .no { color: var(--muted); }
 ol.actions { margin: 0; padding-left: 18px; color: var(--ink-2); }
 
-#tip { position: fixed; pointer-events: none; z-index: 20; background: var(--surface); color: var(--ink); border: 1px solid var(--ring);
+#tip { position: fixed; pointer-events: none; z-index: 20; background: var(--glass-strong); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); color: var(--ink); border: 1px solid var(--ring);
   box-shadow: 0 4px 16px rgba(0,0,0,.14); border-radius: 6px; padding: 8px 10px; font-size: 12.5px; max-width: 260px; }
 #tip b { font-weight: 600; } #tip .row { display: flex; justify-content: space-between; gap: 14px; }
 .method p { margin: 0 0 8px; color: var(--ink-2); font-size: 13.5px; max-width: 80ch; }
@@ -101,12 +147,12 @@ ol.actions { margin: 0; padding-left: 18px; color: var(--ink-2); }
 </style>
 
 <div class="wrap">
-  <div>
+  <header class="hero">
     <div class="eyebrow">Scope 3 · Cat 1, 2 &amp; 4 · Base year <span id="by"></span></div>
     <h1>Supplier Carbon Hotspots</h1>
     <p class="lede">Upstream emissions of a fictional optical fibre &amp; cable plant, estimated supplier by supplier with the GHG Protocol hierarchy: supplier product footprints first, then average material factors, then spend-based factors. The page shows where the tonnes are, how much of the estimate rests on primary data, and which suppliers to engage first.</p>
     <span class="sample">Sample data · fictional suppliers · illustrative emission factors</span>
-  </div>
+  </header>
 
   <section class="kpis" id="kpis"></section>
 
